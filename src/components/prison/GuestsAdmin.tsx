@@ -243,9 +243,16 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
               onChange={(e) => void onPhoto(e.target.files?.[0])}
             />
           </label>
+          <p className="label-mono mt-2 text-center">— or paste a photo link —</p>
+          <input
+            value={draft.image_url}
+            onChange={(e) => setDraft({ ...draft, image_url: e.target.value.trim() })}
+            placeholder="https://…/photo.jpg"
+            className="hairline mt-1.5 w-full bg-background/70 px-3 py-2.5 font-mono text-xs outline-none focus:border-rust"
+          />
           {draft.image_url ? (
             <button type="button" onClick={() => setDraft({ ...draft, image_url: "" })} className="label-mono mt-1 hover:text-foreground">
-              Remove uploaded photo
+              Remove photo
             </button>
           ) : null}
         </div>

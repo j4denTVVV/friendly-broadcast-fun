@@ -265,3 +265,27 @@ export const uploadGuestPhoto = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { url: `/api/public/guest-photo/${path}` };
   });
+
+export type BannerRow = { message: string; link: string | null; enabled: boolean };
+
+export const getBannerAdmin = createServerFn({ method: "POST" }).handler(async () => {
+  await requireAdmin();
+  const db = await admin();
+  const { data, error } = await db.from("site_banner").select("message, link, enabled").eq("id", 1).maybeSingle();
+  if (error) throw new Error(error.message);
+  return (data ?? { message: "", link: null, enabled: false }) as BannerRow;
+});
+
+export const saveBanner = createServerFn({ method: "POST" })
+  .inputValidator((data: BannerRow) => ({
+    message: String(data.message ?? "").slice(0, 200),
+    link: data.link ? String(data.link).slice(0, 500) : null,
+    enabled: !!data.enabled,
+  }))
+  .handler(async ({ data }) => {
+    await requireAdmin();
+    const db = await admin();
+    const { error } = await db.from("site_banner").upsert({ id: 1, ...data, updated_at: new Date().toISOString() });
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
