@@ -28,9 +28,9 @@ export function useLiveGuests() {
               .map((a) => a.trim().toUpperCase())
               .filter(Boolean),
             role: g.role,
-            platform: g.platform ?? undefined,
+            ...(g.platform ? { platform: g.platform } : {}),
             bio: g.bio,
-            image: g.image_url ?? undefined,
+            ...(g.image_url ? { image: g.image_url } : {}),
             socials: Array.isArray(g.socials) ? (g.socials as unknown as SocialLink[]) : [],
             status: "CONFIRMED — INSIDE",
           }),
