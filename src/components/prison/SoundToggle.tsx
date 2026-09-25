@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX } from "lucide-react";
 
 /**
- * Low prison ambience: a slow minor drone, deep sub pulse, distant CCTV
- * static and occasional far-off cell-door clanks. Muted by default, never
- * autoplays, generated with WebAudio so no asset is required.
+ * Warm prison ambience: a soft major drone, gentle ventilation hum and
+ * occasional far-off cell-door clanks down the corridor. Calm rather than
+ * spooky. Muted by default, never autoplays, generated with WebAudio so no
+ * asset is required.
  */
 export function SoundToggle() {
   const [on, setOn] = useState(false);
@@ -49,22 +50,22 @@ export function SoundToggle() {
 
     const stopables: Array<{ stop: (t?: number) => void }> = [];
 
-    // slow minor drone chord (D, F, A) — the "music" bed
+    // warm major drone chord (C, E, G, D) — a calm "music" bed
     const drone = ctx.createGain();
-    drone.gain.value = 0.18;
+    drone.gain.value = 0.16;
     const droneFilter = ctx.createBiquadFilter();
     droneFilter.type = "lowpass";
-    droneFilter.frequency.value = 360;
+    droneFilter.frequency.value = 520;
     drone.connect(droneFilter).connect(master);
 
-    for (const [freq, detune, gain] of [
-      [36.7, 0, 0.9],
-      [43.65, -6, 0.55],
-      [55, 5, 0.45],
-      [73.4, 3, 0.3],
+    for (const [freq, detune, gain, type] of [
+      [65.4, 0, 0.8, "sine"],
+      [82.4, -4, 0.5, "triangle"],
+      [98, 4, 0.42, "triangle"],
+      [146.8, 2, 0.22, "sine"],
     ] as const) {
       const osc = ctx.createOscillator();
-      osc.type = "sawtooth";
+      osc.type = type as OscillatorType;
       osc.frequency.value = freq;
       osc.detune.value = detune;
       const g = ctx.createGain();
@@ -76,25 +77,30 @@ export function SoundToggle() {
 
     // very slow breathing of the drone
     const lfo = ctx.createOscillator();
-    lfo.frequency.value = 0.055;
+    lfo.frequency.value = 0.07;
     const lfoGain = ctx.createGain();
-    lfoGain.gain.value = 0.09;
+    lfoGain.gain.value = 0.06;
     lfo.connect(lfoGain).connect(drone.gain);
     lfo.start();
     stopables.push(lfo);
 
-    // distant CCTV static
+    // soft ventilation hum instead of harsh static
     const buffer = ctx.createBuffer(1, ctx.sampleRate * 3, ctx.sampleRate);
     const data = buffer.getChannelData(0);
-    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.35;
+    let last = 0;
+    for (let i = 0; i < data.length; i++) {
+      // brown-ish noise: warmer, muffled air movement
+      last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02;
+      data[i] = last * 3.5;
+    }
     const noise = ctx.createBufferSource();
     noise.buffer = buffer;
     noise.loop = true;
     const filter = ctx.createBiquadFilter();
     filter.type = "lowpass";
-    filter.frequency.value = 480;
+    filter.frequency.value = 320;
     const noiseGain = ctx.createGain();
-    noiseGain.gain.value = 0.07;
+    noiseGain.gain.value = 0.05;
     noise.connect(filter).connect(noiseGain).connect(master);
     noise.start();
     stopables.push(noise);
@@ -107,18 +113,18 @@ export function SoundToggle() {
       src.buffer = buffer;
       const bp = ctx.createBiquadFilter();
       bp.type = "bandpass";
-      bp.frequency.value = 900 + Math.random() * 700;
-      bp.Q.value = 9;
+      bp.frequency.value = 700 + Math.random() * 500;
+      bp.Q.value = 7;
       const g = ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.14, t + 0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
+      g.gain.exponentialRampToValueAtTime(0.08, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 1.4);
       src.connect(bp).connect(g).connect(convolver);
       src.start(t);
-      src.stop(t + 1);
-      clankTimer = setTimeout(clank, 14000 + Math.random() * 22000);
+      src.stop(t + 1.5);
+      clankTimer = setTimeout(clank, 18000 + Math.random() * 26000);
     };
-    clankTimer = setTimeout(clank, 9000 + Math.random() * 9000);
+    clankTimer = setTimeout(clank, 12000 + Math.random() * 10000);
 
     master.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 2.4);
 
