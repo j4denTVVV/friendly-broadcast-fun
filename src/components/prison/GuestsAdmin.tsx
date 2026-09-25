@@ -25,9 +25,10 @@ function parseSocials(text: string) {
     .map((l) => l.trim())
     .filter(Boolean)
     .map((l) => {
-      const [platform, ...rest] = l.split("|");
+      const [rawPlatform = "", ...rest] = l.split("|");
+      const platform = rawPlatform.trim();
       const url = rest.join("|").trim();
-      return url ? { platform: platform.trim(), url } : { platform: "Link", url: platform.trim() };
+      return url ? { platform, url } : { platform: "Link", url: platform };
     });
 }
 
