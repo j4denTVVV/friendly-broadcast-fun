@@ -13,11 +13,11 @@ export function useLiveGuests() {
       const { data } = await supabase
         .from("guests")
         .select("*")
-        .eq("published", true)
         .order("file", { ascending: true });
       if (!alive || !data) return;
+      const removed = data.filter((g) => g.deleted).map((g) => g.file);
       setGuestEntries(
-        data.map(
+        data.filter((g) => g.published && !g.deleted).map(
           (g): RosterEntry => ({
             file: g.file,
             revealed: true,
@@ -35,6 +35,7 @@ export function useLiveGuests() {
             status: "CONFIRMED — INSIDE",
           }),
         ),
+        removed,
       );
       setVersion((v) => v + 1);
     };

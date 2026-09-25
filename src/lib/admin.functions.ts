@@ -184,6 +184,7 @@ export type GuestRow = {
   socials: { platform: string; url: string }[];
   clearance: string;
   published: boolean;
+  deleted?: boolean;
 };
 
 export const listGuests = createServerFn({ method: "POST" }).handler(async () => {
@@ -213,7 +214,13 @@ export const saveGuest = createServerFn({ method: "POST" })
       updated_at: new Date().toISOString(),
     };
     if (!row.file || !row.name) throw new Error("File number and name are required");
-    const q = data.id ? db.from("guests").update(row).eq("id", data.id) : db.from("guests").insert(row);
+    let id = data.id;
+    if (!id) {
+      const { data: existing } = await db.from("guests").select("id").eq("file", row.file).limit(1);
+      id = existing?.[0]?.id;
+    }
+    const full = { ...row, deleted: false };
+    const q = id ? db.from("guests").update(full).eq("id", id) : db.from("guests").insert(full);
     const { error } = await q;
     if (error) throw new Error(error.message);
     return { ok: true as const };
@@ -227,4 +234,34 @@ export const deleteGuest = createServerFn({ method: "POST" })
     const { error } = await db.from("guests").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true as const };
+  });
+
+/** Removes a built-in (original) guest from the site by storing a "removed" marker. */
+export const removeBuiltInGuest = createServerFn({ method: "POST" })
+  .inputValidator((data: { file: string; name: string }) => data)
+  .handler(async ({ data }) => {
+    await requireAdmin();
+    const db = await admin();
+    const { data: existing } = await db.from("guests").select("id").eq("file", data.file).limit(1);
+    const row = { file: data.file, name: data.name, published: false, deleted: true, updated_at: new Date().toISOString() };
+    const id = existing?.[0]?.id;
+    const { error } = id ? await db.from("guests").update(row).eq("id", id) : await db.from("guests").insert(row);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+export const uploadGuestPhoto = createServerFn({ method: "POST" })
+  .inputValidator((data: { dataUrl: string }) => data)
+  .handler(async ({ data }) => {
+    await requireAdmin();
+    const m = /^data:(image\/(png|jpe?g|webp|gif));base64,(.+)$/.exec(data.dataUrl);
+    if (!m) throw new Error("Please choose a PNG, JPG, WEBP or GIF image");
+    const bytes = Buffer.from(m[3]!, "base64");
+    if (bytes.length > 8 * 1024 * 1024) throw new Error("Photo must be under 8MB");
+    const ext = m[2] === "jpeg" ? "jpg" : m[2];
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const db = await admin();
+    const { error } = await db.storage.from("guest-photos").upload(path, bytes, { contentType: m[1]! });
+    if (error) throw new Error(error.message);
+    return { url: `/api/public/guest-photo/${path}` };
   });

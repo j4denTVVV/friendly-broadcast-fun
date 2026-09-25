@@ -2,12 +2,22 @@ import { placeholderFiles, roster as baseRoster, type RosterEntry } from "@/conf
 
 /** Guests added from the control room, merged in at runtime. */
 let guestEntries: RosterEntry[] = [];
-export function setGuestEntries(entries: RosterEntry[]) {
+let removedFiles = new Set<string>();
+export function setGuestEntries(entries: RosterEntry[], removed: string[] = []) {
   guestEntries = entries;
+  removedFiles = new Set(removed);
 }
 function allEntries(): RosterEntry[] {
-  const baseFiles = new Set(baseRoster.map((r) => r.file));
-  return [...baseRoster, ...guestEntries.filter((g) => !baseFiles.has(g.file))];
+  const overrides = new Map(guestEntries.map((g) => [g.file, g]));
+  const merged = baseRoster
+    .filter((r) => !removedFiles.has(r.file))
+    .map((r) => {
+      const o = overrides.get(r.file);
+      if (!o) return r;
+      overrides.delete(r.file);
+      return { ...r, ...o, ...(o.image ? {} : r.image ? { image: r.image } : {}) };
+    });
+  return [...merged, ...overrides.values()];
 }
 
 /** Real announcements first, then unnamed placeholder files. */
