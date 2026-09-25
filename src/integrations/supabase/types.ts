@@ -95,6 +95,54 @@ export type Database = {
         }
         Relationships: []
       }
+      guests: {
+        Row: {
+          aliases: string
+          bio: string
+          clearance: string
+          created_at: string
+          file: string
+          id: string
+          image_url: string | null
+          name: string
+          platform: string | null
+          published: boolean
+          role: string
+          socials: Json
+          updated_at: string
+        }
+        Insert: {
+          aliases?: string
+          bio?: string
+          clearance?: string
+          created_at?: string
+          file: string
+          id?: string
+          image_url?: string | null
+          name: string
+          platform?: string | null
+          published?: boolean
+          role?: string
+          socials?: Json
+          updated_at?: string
+        }
+        Update: {
+          aliases?: string
+          bio?: string
+          clearance?: string
+          created_at?: string
+          file?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          platform?: string | null
+          published?: boolean
+          role?: string
+          socials?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
