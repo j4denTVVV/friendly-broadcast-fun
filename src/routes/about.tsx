@@ -34,26 +34,31 @@ function AboutPage() {
         <ClassifiedPanel title="The short version" className="h-full">
           <div className="space-y-4 text-sm leading-relaxed text-muted-foreground">
             <p>
-              Prison Stream is a newly announced creator project launching in{" "}
-              <span className="text-foreground">
-                {launch.window} {launch.year}
-              </span>
-              . The exact date has not been announced. The full concept, the format, and the
-              complete list of {terms.people.toLowerCase()} inside have not been revealed. Three files are open;
-              the rest are sealed until someone finds them by name.
+              Prison Stream is a newly announced creator project launching{" "}
+              <span className="text-foreground">23 October 2026</span>. The full concept, format
+              and complete lineup remain under wraps. Only a handful of files have been opened so
+              far — everyone else remains classified, waiting to be discovered by name.
             </p>
             <p>
-              One name has been declassified:{" "}
-              <Link to="/roster/$fileId" params={{ fileId: "001" }} className="text-rust hover:text-foreground">
-                XKEONTE
+              One of those names is{" "}
+              <Link
+                to="/roster/$fileId"
+                params={{ fileId: "001" }}
+                className="font-semibold text-rust underline decoration-rust/40 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground"
+              >
+                xKeonte
               </Link>{" "}
-              — the creator who built and organised the whole thing, and still an inmate. He
-              assembled the project from the inside: the concept, the roster and every door in the
-              facility run through him. He walks in with everyone else.
+              — the creator behind Prison Stream and an inmate himself. He built the project from
+              the ground up, bringing together the concept, the roster and the world surrounding
+              it. But when the doors close, he doesn't stand on the outside watching. He walks
+              into the facility with everyone else.
             </p>
             <p>
-              Everything else is behind locked doors. This site updates the moment anything is
-              officially cleared for release — never before.
+              For now, everything else stays behind locked doors. Names, details and information
+              are only released once they've been officially declassified.
+            </p>
+            <p className="font-mono text-[11px] tracking-[0.24em] text-rust uppercase">
+              Nothing leaves the facility early.
             </p>
           </div>
         </ClassifiedPanel>
