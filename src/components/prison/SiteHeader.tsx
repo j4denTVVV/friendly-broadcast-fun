@@ -14,7 +14,6 @@ export const navLinks = [
   { to: "/live", label: "Live" },
   { to: "/reveals", label: "Reveals" },
   { to: "/bulletin", label: "Bulletin" },
-  { to: "/apply", label: "Apply" },
 ] as const;
 
 export function SiteHeader() {

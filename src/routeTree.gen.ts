@@ -20,6 +20,7 @@ import { Route as RevealsRouteImport } from './routes/reveals'
 import { Route as TrailerRouteImport } from './routes/trailer'
 import { Route as RosterIndexRouteImport } from './routes/roster.index'
 import { Route as RosterFileIdRouteImport } from './routes/roster.$fileId'
+import { Route as ApiPublicGuestPhotoSplatRouteImport } from './routes/api/public/guest-photo.$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -76,6 +77,12 @@ const RosterFileIdRoute = RosterFileIdRouteImport.update({
   path: '/roster/$fileId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicGuestPhotoSplatRoute =
+  ApiPublicGuestPhotoSplatRouteImport.update({
+    id: '/api/public/guest-photo/$',
+    path: '/api/public/guest-photo/$',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/trailer': typeof TrailerRoute
   '/roster/$fileId': typeof RosterFileIdRoute
   '/roster/': typeof RosterIndexRoute
+  '/api/public/guest-photo/$': typeof ApiPublicGuestPhotoSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -102,6 +110,7 @@ export interface FileRoutesByTo {
   '/trailer': typeof TrailerRoute
   '/roster/$fileId': typeof RosterFileIdRoute
   '/roster': typeof RosterIndexRoute
+  '/api/public/guest-photo/$': typeof ApiPublicGuestPhotoSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,6 +125,7 @@ export interface FileRoutesById {
   '/trailer': typeof TrailerRoute
   '/roster/$fileId': typeof RosterFileIdRoute
   '/roster/': typeof RosterIndexRoute
+  '/api/public/guest-photo/$': typeof ApiPublicGuestPhotoSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/trailer'
     | '/roster/$fileId'
     | '/roster/'
+    | '/api/public/guest-photo/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/trailer'
     | '/roster/$fileId'
     | '/roster'
+    | '/api/public/guest-photo/$'
   id:
     | '__root__'
     | '/'
@@ -157,6 +169,7 @@ export interface FileRouteTypes {
     | '/trailer'
     | '/roster/$fileId'
     | '/roster/'
+    | '/api/public/guest-photo/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -171,6 +184,7 @@ export interface RootRouteChildren {
   TrailerRoute: typeof TrailerRoute
   RosterFileIdRoute: typeof RosterFileIdRoute
   RosterIndexRoute: typeof RosterIndexRoute
+  ApiPublicGuestPhotoSplatRoute: typeof ApiPublicGuestPhotoSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -252,6 +266,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RosterFileIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/guest-photo/$': {
+      id: '/api/public/guest-photo/$'
+      path: '/api/public/guest-photo/$'
+      fullPath: '/api/public/guest-photo/$'
+      preLoaderRoute: typeof ApiPublicGuestPhotoSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -267,6 +288,7 @@ const rootRouteChildren: RootRouteChildren = {
   TrailerRoute: TrailerRoute,
   RosterFileIdRoute: RosterFileIdRoute,
   RosterIndexRoute: RosterIndexRoute,
+  ApiPublicGuestPhotoSplatRoute: ApiPublicGuestPhotoSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
