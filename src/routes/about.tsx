@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { PageShell } from "@/components/prison/PageShell";
 import { ClassifiedPanel, DataRow } from "@/components/prison/Classified";
-import { launch, projectFile, terms } from "@/config/prison";
+import { projectFile } from "@/config/prison";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
