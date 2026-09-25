@@ -1,21 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useState } from "react";
-import { Inbox, Lock, Megaphone, Users } from "lucide-react";
+import { Lock, Megaphone, Users } from "lucide-react";
 import { PageShell } from "@/components/prison/PageShell";
 import { GuestsAdmin } from "@/components/prison/GuestsAdmin";
 import {
   adminLogin,
   adminLogout,
   adminStatus,
-  listApplications,
-  setApplicationStatus,
-  deleteApplication,
   listAllBulletins,
   listGuests,
   saveBulletin,
   deleteBulletin,
-  type ApplicationRow,
   type BulletinRow,
 } from "@/lib/admin.functions";
 
@@ -56,9 +52,6 @@ function AdminPage() {
   const login = useServerFn(adminLogin);
   const logout = useServerFn(adminLogout);
   const status = useServerFn(adminStatus);
-  const loadApps = useServerFn(listApplications);
-  const setStatus = useServerFn(setApplicationStatus);
-  const removeApp = useServerFn(deleteApplication);
   const loadBulletins = useServerFn(listAllBulletins);
   const persistBulletin = useServerFn(saveBulletin);
   const removeBulletin = useServerFn(deleteBulletin);
@@ -67,19 +60,17 @@ function AdminPage() {
   const [unlocked, setUnlocked] = useState<boolean | null>(null);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [tab, setTab] = useState<"apps" | "board" | "guests">("apps");
-  const [apps, setApps] = useState<ApplicationRow[]>([]);
+  const [tab, setTab] = useState<"board" | "guests">("guests");
   const [bulletins, setBulletins] = useState<BulletinRow[]>([]);
   const [draft, setDraft] = useState<BulletinDraft>({ ...emptyBulletin });
   const [busy, setBusy] = useState(false);
   const [guestCount, setGuestCount] = useState(0);
 
   const refresh = useCallback(async () => {
-    const [a, b, g] = await Promise.all([loadApps({}), loadBulletins({}), loadGuests({})]);
-    setApps(a);
+    const [b, g] = await Promise.all([loadBulletins({}), loadGuests({})]);
     setBulletins(b);
     setGuestCount(g.length);
-  }, [loadApps, loadBulletins, loadGuests]);
+  }, [loadBulletins, loadGuests]);
 
   useEffect(() => {
     void (async () => {
@@ -140,11 +131,9 @@ function AdminPage() {
     );
   }
 
-  const pending = apps.filter((a) => a.status === "PENDING").length;
   const stats = [
-    { key: "apps" as const, label: "Entry requests", value: apps.length, sub: `${pending} pending`, Icon: Inbox },
+    { key: "guests" as const, label: "Custom guest files", value: guestCount, sub: "edits & additions", Icon: Users },
     { key: "board" as const, label: "Bulletins", value: bulletins.length, sub: `${bulletins.filter((b) => b.published).length} live`, Icon: Megaphone },
-    { key: "guests" as const, label: "Guest files", value: guestCount, sub: "saved to roster", Icon: Users },
   ];
 
   return (
@@ -163,7 +152,7 @@ function AdminPage() {
         </button>
       </div>
 
-      <div className="mb-10 grid gap-4 sm:grid-cols-3">
+      <div className="mb-10 grid gap-4 sm:grid-cols-2">
         {stats.map(({ key, label, value, sub, Icon }) => (
           <button
             key={key}
@@ -185,51 +174,7 @@ function AdminPage() {
 
       {tab === "guests" ? (
         <GuestsAdmin onCount={setGuestCount} />
-      ) : tab === "apps" ? (
-        <div className="space-y-4">
-          {apps.length === 0 ? (
-            <p className="label-mono">No requests yet.</p>
-          ) : null}
-          {apps.map((a) => (
-            <article key={a.id} className="panel animate-rise space-y-3 p-6">
-              <div className="flex flex-wrap items-center gap-3">
-                <h3 className="font-display text-lg tracking-[0.2em] uppercase">{a.name}</h3>
-                <span className="label-mono text-rust">{a.handle}</span>
-                <span className="label-mono ml-auto">{a.status}</span>
-              </div>
-              <dl className="grid gap-1 font-mono text-xs text-muted-foreground">
-                {a.platform ? <div>Platform: {a.platform}</div> : null}
-                {a.contact ? <div>Contact: {a.contact}</div> : null}
-                {a.links ? <div className="break-all">Links: {a.links}</div> : null}
-              </dl>
-              <p className="text-sm leading-relaxed whitespace-pre-wrap">{a.pitch}</p>
-              <div className="flex flex-wrap gap-2 pt-2">
-                {["APPROVED", "REJECTED", "PENDING"].map((s) => (
-                  <button
-                    key={s}
-                    onClick={async () => {
-                      await setStatus({ data: { id: a.id, status: s } });
-                      await refresh();
-                    }}
-                    className="hairline bg-card/50 px-3 py-2 font-mono text-[10px] tracking-[0.25em] uppercase hover:border-rust"
-                  >
-                    {s}
-                  </button>
-                ))}
-                <button
-                  onClick={async () => {
-                    await removeApp({ data: { id: a.id } });
-                    await refresh();
-                  }}
-                  className="hairline ml-auto bg-card/50 px-3 py-2 font-mono text-[10px] tracking-[0.25em] text-destructive uppercase hover:border-destructive"
-                >
-                  Delete
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
-      ) : (
+      : (
         <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
           <form
             className="panel animate-rise space-y-3 p-6"
