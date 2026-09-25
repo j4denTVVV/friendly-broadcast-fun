@@ -12,6 +12,7 @@ import {
   setApplicationStatus,
   deleteApplication,
   listAllBulletins,
+  listGuests,
   saveBulletin,
   deleteBulletin,
   type ApplicationRow,
@@ -61,6 +62,7 @@ function AdminPage() {
   const loadBulletins = useServerFn(listAllBulletins);
   const persistBulletin = useServerFn(saveBulletin);
   const removeBulletin = useServerFn(deleteBulletin);
+  const loadGuests = useServerFn(listGuests);
 
   const [unlocked, setUnlocked] = useState<boolean | null>(null);
   const [password, setPassword] = useState("");
@@ -73,10 +75,11 @@ function AdminPage() {
   const [guestCount, setGuestCount] = useState(0);
 
   const refresh = useCallback(async () => {
-    const [a, b] = await Promise.all([loadApps({}), loadBulletins({})]);
+    const [a, b, g] = await Promise.all([loadApps({}), loadBulletins({}), loadGuests({})]);
     setApps(a);
     setBulletins(b);
-  }, [loadApps, loadBulletins]);
+    setGuestCount(g.length);
+  }, [loadApps, loadBulletins, loadGuests]);
 
   useEffect(() => {
     void (async () => {
