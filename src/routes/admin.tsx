@@ -174,7 +174,7 @@ function AdminPage() {
 
       {tab === "guests" ? (
         <GuestsAdmin onCount={setGuestCount} />
-      : (
+      ) : (
         <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
           <form
             className="panel animate-rise space-y-3 p-6"

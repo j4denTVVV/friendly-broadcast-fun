@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
-import { Route as ApplyRouteImport } from './routes/apply'
 import { Route as BulletinRouteImport } from './routes/bulletin'
 import { Route as ConnectRouteImport } from './routes/connect'
 import { Route as LiveRouteImport } from './routes/live'
@@ -35,11 +34,6 @@ const AboutRoute = AboutRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApplyRoute = ApplyRouteImport.update({
-  id: '/apply',
-  path: '/apply',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BulletinRoute = BulletinRouteImport.update({
@@ -88,7 +82,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
-  '/apply': typeof ApplyRoute
   '/bulletin': typeof BulletinRoute
   '/connect': typeof ConnectRoute
   '/live': typeof LiveRoute
@@ -102,7 +95,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
-  '/apply': typeof ApplyRoute
   '/bulletin': typeof BulletinRoute
   '/connect': typeof ConnectRoute
   '/live': typeof LiveRoute
@@ -117,7 +109,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
-  '/apply': typeof ApplyRoute
   '/bulletin': typeof BulletinRoute
   '/connect': typeof ConnectRoute
   '/live': typeof LiveRoute
@@ -133,7 +124,6 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
-    | '/apply'
     | '/bulletin'
     | '/connect'
     | '/live'
@@ -147,7 +137,6 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
-    | '/apply'
     | '/bulletin'
     | '/connect'
     | '/live'
@@ -161,7 +150,6 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
-    | '/apply'
     | '/bulletin'
     | '/connect'
     | '/live'
@@ -176,7 +164,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRoute
-  ApplyRoute: typeof ApplyRoute
   BulletinRoute: typeof BulletinRoute
   ConnectRoute: typeof ConnectRoute
   LiveRoute: typeof LiveRoute
@@ -208,13 +195,6 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/apply': {
-      id: '/apply'
-      path: '/apply'
-      fullPath: '/apply'
-      preLoaderRoute: typeof ApplyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bulletin': {
@@ -280,7 +260,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRoute,
-  ApplyRoute: ApplyRoute,
   BulletinRoute: BulletinRoute,
   ConnectRoute: ConnectRoute,
   LiveRoute: LiveRoute,
