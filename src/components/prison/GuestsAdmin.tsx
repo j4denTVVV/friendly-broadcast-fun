@@ -1,7 +1,25 @@
 import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Pencil, Plus, Search, Trash2, UserRound, X } from "lucide-react";
-import { deleteGuest, listGuests, saveGuest, type GuestRow } from "@/lib/admin.functions";
+import { ImageUp, Pencil, Plus, RotateCcw, Search, Trash2, UserRound, X } from "lucide-react";
+import {
+  deleteGuest,
+  listGuests,
+  removeBuiltInGuest,
+  saveGuest,
+  uploadGuestPhoto,
+  type GuestRow,
+} from "@/lib/admin.functions";
+import { roster as baseRoster } from "@/config/prison";
+
+type Item = {
+  file: string;
+  name: string;
+  role: string;
+  image: string | undefined;
+  original: boolean;
+  removed: boolean;
+  row: GuestRow | undefined;
+};
 
 const empty = {
   file: "",
@@ -37,6 +55,10 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
   const load = useServerFn(listGuests);
   const save = useServerFn(saveGuest);
   const remove = useServerFn(deleteGuest);
+  const removeOriginal = useServerFn(removeBuiltInGuest);
+  const upload = useServerFn(uploadGuestPhoto);
+  const [uploading, setUploading] = useState(false);
+  const [fallbackImage, setFallbackImage] = useState<string | undefined>();
   const [guests, setGuests] = useState<GuestRow[]>([]);
   const [draft, setDraft] = useState<Draft>({ ...empty });
   const [busy, setBusy] = useState(false);
@@ -53,11 +75,73 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
     void refresh().catch(() => {});
   }, [refresh]);
 
+  const items = useMemo<Item[]>(() => {
+    const byFile = new Map(guests.map((g) => [g.file, g]));
+    const list: Item[] = baseRoster
+      .filter((r) => r.name)
+      .map((r) => {
+        const row = byFile.get(r.file);
+        byFile.delete(r.file);
+        return {
+          file: r.file,
+          name: row && !row.deleted ? row.name : r.name!,
+          role: row && !row.deleted ? row.role : (r.role ?? "GUEST"),
+          image: (row && !row.deleted && row.image_url) || r.image,
+          original: true,
+          removed: !!row?.deleted,
+          row,
+        };
+      });
+    for (const row of byFile.values())
+      list.push({ file: row.file, name: row.name, role: row.role, image: row.image_url ?? undefined, original: false, removed: false, row });
+    return list.sort((a, b) => a.file.localeCompare(b.file));
+  }, [guests]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return guests;
-    return guests.filter((g) => `${g.name} ${g.file} ${g.role} ${g.aliases}`.toLowerCase().includes(q));
-  }, [guests, query]);
+    if (!q) return items;
+    return items.filter((g) => `${g.name} ${g.file} ${g.role}`.toLowerCase().includes(q));
+  }, [items, query]);
+
+  const startEdit = (it: Item) => {
+    const base = baseRoster.find((r) => r.file === it.file);
+    const row = it.row && !it.row.deleted ? it.row : undefined;
+    setFallbackImage(base?.image);
+    setDraft({
+      ...(row ? { id: row.id } : {}),
+      file: it.file,
+      name: row?.name ?? base?.name ?? "",
+      aliases: row?.aliases ?? (base?.aliases ?? []).join(", "),
+      role: row?.role ?? base?.role ?? "GUEST",
+      platform: row?.platform ?? base?.platform ?? "",
+      bio: row?.bio ?? base?.bio ?? "",
+      image_url: row?.image_url ?? "",
+      socialsText: (row?.socials ?? base?.socials ?? []).map((s) => `${s.platform} | ${s.url}`).join("\n"),
+      clearance: row?.clearance ?? base?.clearance ?? "REVEALED",
+      published: row?.published ?? true,
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const onPhoto = async (file: File | undefined) => {
+    if (!file) return;
+    setError("");
+    setUploading(true);
+    try {
+      const dataUrl = await new Promise<string>((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(String(r.result));
+        r.onerror = () => rej(new Error("Could not read file"));
+        r.readAsDataURL(file);
+      });
+      const { url } = await upload({ data: { dataUrl } });
+      setDraft((d) => ({ ...d, image_url: url }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const field = (key: keyof typeof empty, label: string, placeholder = "") => (
     <div>
@@ -84,7 +168,7 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
             const { socialsText, ...rest } = draft;
             await save({ data: { ...rest, socials: parseSocials(socialsText) } });
             setNotice(`${draft.name.toUpperCase()} saved — live for everyone now.`);
-            setDraft({ ...empty });
+            (setDraft({ ...empty }), setFallbackImage(undefined));
             await refresh();
           } catch (err) {
             setError(err instanceof Error ? err.message : "Save failed");
@@ -111,8 +195,8 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
         {/* Preview */}
         <div className="hairline flex items-center gap-4 bg-background/50 p-4">
           <div className="hairline flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden bg-card">
-            {draft.image_url ? (
-              <img src={draft.image_url} alt="" className="h-full w-full object-cover" />
+            {draft.image_url || fallbackImage ? (
+              <img src={draft.image_url || fallbackImage} alt="" className="h-full w-full object-cover" />
             ) : (
               <UserRound className="h-8 w-8 text-muted-foreground" />
             )}
@@ -147,7 +231,24 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
           </div>
           {field("platform", "Platform", "TWITCH")}
         </div>
-        {field("image_url", "Photo link", "https://…")}
+        <div>
+          <label className="label-mono block">Photo</label>
+          <label className="hairline mt-1.5 flex cursor-pointer items-center justify-center gap-2 bg-background/50 px-4 py-5 font-mono text-[11px] tracking-[0.25em] uppercase transition-colors hover:border-rust">
+            <ImageUp className="h-4 w-4" />
+            {uploading ? "Uploading…" : draft.image_url ? "Replace photo" : "Upload photo"}
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              className="hidden"
+              onChange={(e) => void onPhoto(e.target.files?.[0])}
+            />
+          </label>
+          {draft.image_url ? (
+            <button type="button" onClick={() => setDraft({ ...draft, image_url: "" })} className="label-mono mt-1 hover:text-foreground">
+              Remove uploaded photo
+            </button>
+          ) : null}
+        </div>
         {field("aliases", "Search nicknames (comma separated)", "NICK, OTHER NAME")}
         <div>
           <label className="label-mono block">Bio</label>
@@ -195,7 +296,7 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
         {notice ? <p className="font-mono text-xs text-rust uppercase">{notice}</p> : null}
         <button
           type="submit"
-          disabled={busy}
+          disabled={busy || uploading}
           className="hairline flex w-full items-center justify-center gap-2 bg-card px-4 py-3.5 font-mono text-[11px] tracking-[0.3em] uppercase transition-colors hover:border-rust disabled:opacity-50"
         >
           <Plus className="h-4 w-4" />
@@ -215,19 +316,19 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
         </div>
         {filtered.length === 0 ? (
           <p className="label-mono panel p-6 text-center">
-            {guests.length ? "No matches." : "No guests added yet."}
+            No matches.
           </p>
         ) : null}
         {filtered.map((g) => (
           <article
-            key={g.id}
-            className={`panel group flex items-center gap-4 p-4 transition-colors hover:border-rust ${
-              draft.id === g.id ? "border-rust" : ""
-            }`}
+            key={g.file}
+            className={`panel flex items-center gap-4 p-4 transition-colors hover:border-rust ${
+              draft.file === g.file && draft.name ? "border-rust" : ""
+            } ${g.removed ? "opacity-50" : ""}`}
           >
             <div className="hairline flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden bg-background">
-              {g.image_url ? (
-                <img src={g.image_url} alt={g.name} className="h-full w-full object-cover" />
+              {g.image ? (
+                <img src={g.image} alt={g.name} className="h-full w-full object-cover" />
               ) : (
                 <UserRound className="h-6 w-6 text-muted-foreground" />
               )}
@@ -235,51 +336,44 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 <span className="label-mono text-rust">#{g.file}</span>
-                <span
-                  className={`label-mono ml-auto px-2 py-0.5 ${
-                    g.published ? "bg-rust/15 text-rust" : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {g.published ? "LIVE" : "DRAFT"}
+                <span className="label-mono ml-auto bg-muted px-2 py-0.5 text-muted-foreground">
+                  {g.removed ? "REMOVED" : g.row && !g.row.published ? "DRAFT" : g.original && !g.row ? "ORIGINAL" : "LIVE"}
                 </span>
               </div>
               <h4 className="font-display truncate text-base tracking-[0.18em] uppercase">{g.name}</h4>
               <p className="label-mono truncate">{g.role}</p>
             </div>
             <div className="flex flex-col gap-1">
-              <button
-                aria-label={`Edit ${g.name}`}
-                onClick={() => {
-                  setDraft({
-                    id: g.id,
-                    file: g.file,
-                    name: g.name,
-                    aliases: g.aliases,
-                    role: g.role,
-                    platform: g.platform ?? "",
-                    bio: g.bio,
-                    image_url: g.image_url ?? "",
-                    socialsText: (g.socials ?? []).map((s) => `${s.platform} | ${s.url}`).join("\n"),
-                    clearance: g.clearance,
-                    published: g.published,
-                  });
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-                className="hairline p-2 hover:border-rust"
-              >
-                <Pencil className="h-3.5 w-3.5" />
-              </button>
-              <button
-                aria-label={`Delete ${g.name}`}
-                onClick={async () => {
-                  if (!confirm(`Remove ${g.name}?`)) return;
-                  await remove({ data: { id: g.id } });
-                  await refresh();
-                }}
-                className="hairline p-2 text-destructive hover:border-destructive"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </button>
+              {g.removed ? (
+                <button
+                  aria-label={`Restore ${g.name}`}
+                  onClick={async () => {
+                    if (g.row) await remove({ data: { id: g.row.id } });
+                    await refresh();
+                  }}
+                  className="hairline p-2 hover:border-rust"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                </button>
+              ) : (
+                <>
+                  <button aria-label={`Edit ${g.name}`} onClick={() => startEdit(g)} className="hairline p-2 hover:border-rust">
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    aria-label={`Remove ${g.name}`}
+                    onClick={async () => {
+                      if (!confirm(`Remove ${g.name} from the site?`)) return;
+                      if (g.original) await removeOriginal({ data: { file: g.file, name: g.name } });
+                      else if (g.row) await remove({ data: { id: g.row.id } });
+                      await refresh();
+                    }}
+                    className="hairline p-2 text-destructive hover:border-destructive"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </>
+              )}
             </div>
           </article>
         ))}
