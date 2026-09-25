@@ -101,6 +101,7 @@ export type Database = {
           bio: string
           clearance: string
           created_at: string
+          deleted: boolean
           file: string
           id: string
           image_url: string | null
@@ -116,6 +117,7 @@ export type Database = {
           bio?: string
           clearance?: string
           created_at?: string
+          deleted?: boolean
           file: string
           id?: string
           image_url?: string | null
@@ -131,6 +133,7 @@ export type Database = {
           bio?: string
           clearance?: string
           created_at?: string
+          deleted?: boolean
           file?: string
           id?: string
           image_url?: string | null
