@@ -24,6 +24,15 @@ export const Route = createFileRoute("/roster/")({
   component: RosterPage,
 });
 
+const ROLE_GROUPS: { key: string; label: string; match: (role?: string) => boolean }[] = [
+  { key: "guards", label: "Guards", match: (r) => r === "GUARD" },
+  {
+    key: "counsellor",
+    label: "Guidance Counsellor",
+    match: (r) => r === "GUIDANCE COUNSELOR" || r === "GUIDANCE COUNSELLOR",
+  },
+];
+
 function RosterPage() {
   const [unsealed, setUnsealed] = useState<string[]>([]);
   useEffect(() => setUnsealed(readUnsealedFiles()), []);
@@ -31,6 +40,13 @@ function RosterPage() {
   useLiveGuests();
   const files = getRosterFiles(unsealed);
   const revealedCount = files.filter((f) => f.revealed).length;
+
+  const grouped = ROLE_GROUPS.map((g) => ({
+    ...g,
+    entries: files.filter((f) => f.revealed && g.match(f.role)),
+  })).filter((g) => g.entries.length > 0);
+  const inmates = files.filter((f) => !f.revealed || !ROLE_GROUPS.some((g) => g.match(f.role)));
+  const sections = [...grouped, { key: "inmates", label: "Inmates", entries: inmates }];
 
   return (
     <PageShell
@@ -60,11 +76,24 @@ function RosterPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-        {files.map((f, i) => (
-          <Reveal key={f.file} delay={(i % 4) * 80}>
-            <FileCard entry={f} index={i} />
-          </Reveal>
+      <div className="space-y-12">
+        {sections.map((section) => (
+          <section key={section.key}>
+            <div className="mb-5 flex items-center gap-4">
+              <h2 className="font-display text-xl tracking-[0.25em] uppercase">{section.label}</h2>
+              <span className="label-mono text-muted-foreground">
+                {String(section.entries.filter((e) => e.revealed).length).padStart(2, "0")} FILES
+              </span>
+              <div className="hairline h-px flex-1 border-t" />
+            </div>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+              {section.entries.map((f, i) => (
+                <Reveal key={f.file} delay={(i % 4) * 80}>
+                  <FileCard entry={f} index={i} />
+                </Reveal>
+              ))}
+            </div>
+          </section>
         ))}
       </div>
     </PageShell>

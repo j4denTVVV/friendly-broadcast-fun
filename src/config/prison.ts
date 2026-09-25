@@ -214,7 +214,7 @@ export const roster: RosterEntry[] = [
     clearance: "CONFIRMED",
     name: "MRWRLD",
     aliases: ["MR WRLD", "MRWORLD", "MRWRLDD", "ITSMRWRLD"],
-    role: "INMATE",
+    role: "GUARD",
     image: mrwrldAsset,
     bio: "MrWrld is a South London YouTuber, streamer and content creator known for his presence across the UK creator and music scene. He began streaming in 2025, while also building his YouTube channel and growing a community around his personality and content. He has appeared in FourNine's music videos and has also worked on music of his own, giving him a presence beyond streaming and YouTube. Through his different projects and collaborations, MrWrld continues to build his name and community online.",
     socials: [
@@ -233,7 +233,7 @@ export const roster: RosterEntry[] = [
     clearance: "CONFIRMED",
     name: "SAMHAM",
     aliases: ["SAM HAM", "SAM"],
-    role: "INMATE",
+    role: "GUARD",
     image: samhamAsset,
     bio: "SamHam is a London-based streamer and content creator known for his Just Chatting, gaming and IRL content. He has built a strong community around his personality and collaborations with other creators, becoming one of the top five UK streamers. SamHam has also grown his presence across Twitch, YouTube and TikTok, regularly creating entertaining streams and content that have helped him become a recognised name in the UK streaming scene.",
     socials: [
@@ -302,7 +302,7 @@ export const roster: RosterEntry[] = [
     clearance: "CONFIRMED",
     name: "LBMM",
     aliases: ["LBM", "L B M M", "LBMM100"],
-    role: "INMATE",
+    role: "GUARD",
     image: lbmmAsset,
     bio: "LBM is a UK-based streamer and content creator known for his diverse range of content and love for gaming. He streams everything from GTA RP and reaction content to testing out the latest games, always keeping his streams fresh and unpredictable. His willingness to try new games and different types of content has helped him build a strong community, while his personality keeps viewers coming back for more.",
     socials: [
@@ -339,7 +339,7 @@ export const roster: RosterEntry[] = [
     clearance: "CONFIRMED",
     name: "TYRONE1MC",
     aliases: ["TYRONE", "TYRONE 1MC", "TYRONE1"],
-    role: "INMATE",
+    role: "GUARD",
     image: tyroneAsset,
     bio: "Tyrone1mc is a British streamer, content creator and musician who has become one of the top five UK streamers, building a huge following of more than 2.5 million people across his social platforms. He is best known for his GTA RP streams, reactions, gaming and IRL content, bringing a big personality and plenty of energy to everything he does.\nTyrone has played on major GTA RP servers including NoPixel, District 10 and Unique RP, while his success on Twitch has seen him become a Twitch Partner and surpass 5 million watch hours. Away from streaming, he is also a musician and part of the dance music group FooR, performing at major UK festivals and working with artists including Nathan Dawe and Anne-Marie.",
     socials: [
@@ -377,7 +377,7 @@ export const roster: RosterEntry[] = [
     clearance: "CONFIRMED",
     name: "REMYB0YS",
     aliases: ["REMY", "REMYB0YS", "REMY BOYS", "REMYBOYS", "REMYBOY", "REMYB0Y", "R.BOYSZ", "RBOYSZ"],
-    role: "INMATE",
+    role: "GUARD",
     image: remyb0ysAsset,
     bio: "Remyb0ys is a UK content creator who first became known for his funny and viral dancing videos, often doing dances to songs and music videos featuring UK rappers. As his audience grew, he slowly moved into TikTok LIVE, before eventually making the jump to Twitch. He's since built his own community through Just Chatting and FIFA streams, bringing the same personality and humour that made his dance videos so popular.",
     socials: [
@@ -731,6 +731,17 @@ export const roster: RosterEntry[] = [
       { platform: "X", url: "https://x.com/hassynain" },
       { platform: "Discord", url: "https://discord.com/invite/2j3zM4KGv" },
     ],
+    status: "CONFIRMED — INSIDE",
+  },
+  {
+    file: "039",
+    revealed: true,
+    clearance: "CONFIRMED",
+    name: "JAYZ",
+    aliases: ["JAYZ", "JAY Z", "JAY"],
+    role: "GUARD",
+    bio: "Jayz is confirmed inside the facility as one of the guards. More details on his file remain classified for now.",
+    socials: [],
     status: "CONFIRMED — INSIDE",
   },
 ];
