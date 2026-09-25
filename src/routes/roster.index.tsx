@@ -24,6 +24,15 @@ export const Route = createFileRoute("/roster/")({
   component: RosterPage,
 });
 
+const ROLE_GROUPS: { key: string; label: string; match: (role?: string) => boolean }[] = [
+  { key: "guards", label: "Guards", match: (r) => r === "GUARD" },
+  {
+    key: "counsellor",
+    label: "Guidance Counsellor",
+    match: (r) => r === "GUIDANCE COUNSELOR" || r === "GUIDANCE COUNSELLOR",
+  },
+];
+
 function RosterPage() {
   const [unsealed, setUnsealed] = useState<string[]>([]);
   useEffect(() => setUnsealed(readUnsealedFiles()), []);
@@ -31,6 +40,13 @@ function RosterPage() {
   useLiveGuests();
   const files = getRosterFiles(unsealed);
   const revealedCount = files.filter((f) => f.revealed).length;
+
+  const grouped = ROLE_GROUPS.map((g) => ({
+    ...g,
+    entries: files.filter((f) => f.revealed && g.match(f.role)),
+  })).filter((g) => g.entries.length > 0);
+  const inmates = files.filter((f) => !f.revealed || !ROLE_GROUPS.some((g) => g.match(f.role)));
+  const sections = [...grouped, { key: "inmates", label: "Inmates", entries: inmates }];
 
   return (
     <PageShell
