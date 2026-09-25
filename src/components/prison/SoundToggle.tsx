@@ -113,18 +113,18 @@ export function SoundToggle() {
       src.buffer = buffer;
       const bp = ctx.createBiquadFilter();
       bp.type = "bandpass";
-      bp.frequency.value = 900 + Math.random() * 700;
-      bp.Q.value = 9;
+      bp.frequency.value = 700 + Math.random() * 500;
+      bp.Q.value = 7;
       const g = ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.14, t + 0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
+      g.gain.exponentialRampToValueAtTime(0.08, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 1.4);
       src.connect(bp).connect(g).connect(convolver);
       src.start(t);
-      src.stop(t + 1);
-      clankTimer = setTimeout(clank, 14000 + Math.random() * 22000);
+      src.stop(t + 1.5);
+      clankTimer = setTimeout(clank, 18000 + Math.random() * 26000);
     };
-    clankTimer = setTimeout(clank, 9000 + Math.random() * 9000);
+    clankTimer = setTimeout(clank, 12000 + Math.random() * 10000);
 
     master.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 2.4);
 
