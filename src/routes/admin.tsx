@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useState } from "react";
+import { Inbox, Lock, Megaphone, Users } from "lucide-react";
 import { PageShell } from "@/components/prison/PageShell";
 import { GuestsAdmin } from "@/components/prison/GuestsAdmin";
 import {
@@ -11,6 +12,7 @@ import {
   setApplicationStatus,
   deleteApplication,
   listAllBulletins,
+  listGuests,
   saveBulletin,
   deleteBulletin,
   type ApplicationRow,
@@ -60,6 +62,7 @@ function AdminPage() {
   const loadBulletins = useServerFn(listAllBulletins);
   const persistBulletin = useServerFn(saveBulletin);
   const removeBulletin = useServerFn(deleteBulletin);
+  const loadGuests = useServerFn(listGuests);
 
   const [unlocked, setUnlocked] = useState<boolean | null>(null);
   const [password, setPassword] = useState("");
@@ -69,12 +72,14 @@ function AdminPage() {
   const [bulletins, setBulletins] = useState<BulletinRow[]>([]);
   const [draft, setDraft] = useState<BulletinDraft>({ ...emptyBulletin });
   const [busy, setBusy] = useState(false);
+  const [guestCount, setGuestCount] = useState(0);
 
   const refresh = useCallback(async () => {
-    const [a, b] = await Promise.all([loadApps({}), loadBulletins({})]);
+    const [a, b, g] = await Promise.all([loadApps({}), loadBulletins({}), loadGuests({})]);
     setApps(a);
     setBulletins(b);
-  }, [loadApps, loadBulletins]);
+    setGuestCount(g.length);
+  }, [loadApps, loadBulletins, loadGuests]);
 
   useEffect(() => {
     void (async () => {
@@ -135,33 +140,51 @@ function AdminPage() {
     );
   }
 
+  const pending = apps.filter((a) => a.status === "PENDING").length;
+  const stats = [
+    { key: "apps" as const, label: "Entry requests", value: apps.length, sub: `${pending} pending`, Icon: Inbox },
+    { key: "board" as const, label: "Bulletins", value: bulletins.length, sub: `${bulletins.filter((b) => b.published).length} live`, Icon: Megaphone },
+    { key: "guests" as const, label: "Guest files", value: guestCount, sub: "saved to roster", Icon: Users },
+  ];
+
   return (
     <PageShell kicker="Restricted" title="Control room">
-      <div className="mb-8 flex flex-wrap items-center gap-2">
-        {(["apps", "board", "guests"] as const).map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`hairline px-4 py-2 font-mono text-[11px] tracking-[0.25em] uppercase transition-colors ${
-              tab === t ? "border-rust bg-card text-foreground" : "bg-card/40 text-muted-foreground"
-            }`}
-          >
-            {t === "apps" ? `Requests (${apps.length})` : t === "board" ? `Bulletin board (${bulletins.length})` : "Guests"}
-          </button>
-        ))}
+      <div className="mb-8 flex items-center gap-3">
+        <span className="h-2 w-2 animate-pulse rounded-full bg-rust" />
+        <span className="label-mono">Clearance granted · all changes go live instantly</span>
         <button
           onClick={async () => {
             await logout({});
             setUnlocked(false);
           }}
-          className="hairline ml-auto bg-card/40 px-4 py-2 font-mono text-[11px] tracking-[0.25em] text-muted-foreground uppercase hover:border-rust"
+          className="hairline ml-auto flex items-center gap-2 bg-card/40 px-4 py-2 font-mono text-[11px] tracking-[0.25em] text-muted-foreground uppercase hover:border-rust hover:text-foreground"
         >
-          Lock
+          <Lock className="h-3.5 w-3.5" /> Lock
         </button>
       </div>
 
+      <div className="mb-10 grid gap-4 sm:grid-cols-3">
+        {stats.map(({ key, label, value, sub, Icon }) => (
+          <button
+            key={key}
+            onClick={() => setTab(key)}
+            className={`panel group relative overflow-hidden p-5 text-left transition-all hover:-translate-y-0.5 hover:border-rust ${
+              tab === key ? "border-rust" : ""
+            }`}
+          >
+            {tab === key ? <span className="absolute inset-x-0 top-0 h-0.5 bg-rust" /> : null}
+            <div className="flex items-center justify-between">
+              <span className="label-mono">{label}</span>
+              <Icon className={`h-4 w-4 ${tab === key ? "text-rust" : "text-muted-foreground"}`} />
+            </div>
+            <p className="font-display mt-3 text-4xl tracking-[0.1em]">{value}</p>
+            <p className="label-mono mt-1 text-rust">{sub}</p>
+          </button>
+        ))}
+      </div>
+
       {tab === "guests" ? (
-        <GuestsAdmin />
+        <GuestsAdmin onCount={setGuestCount} />
       ) : tab === "apps" ? (
         <div className="space-y-4">
           {apps.length === 0 ? (
