@@ -91,7 +91,21 @@ export const setApplicationStatus = createServerFn({ method: "POST" })
       })
       .eq("id", data.id);
     if (error) throw new Error(error.message);
-    return { ok: true as const };
+    let emailed = false;
+    if (data.status === "REJECTED") {
+      const { data: app } = await db.from("applications").select("name, contact").eq("id", data.id).maybeSingle();
+      const to = app?.contact?.trim() ?? "";
+      if (/^[^\s@<>,]+@[^\s@<>,]+\.[^\s@<>,]+$/.test(to)) {
+        const { sendGmail } = await import("./gmail.server");
+        await sendGmail(
+          to,
+          "Your Prison Stream application",
+          `Hi ${app?.name ?? "there"},\n\nThank you for applying to Prison Stream. After review, your application has not been accepted this time.${data.notes ? `\n\nNote from the team: ${data.notes}` : ""}\n\nThank you for your interest.\n\n— Prison Stream`,
+        );
+        emailed = true;
+      }
+    }
+    return { ok: true as const, emailed };
   });
 
 export const deleteApplication = createServerFn({ method: "POST" })
