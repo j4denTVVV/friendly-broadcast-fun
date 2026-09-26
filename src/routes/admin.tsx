@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useState } from "react";
-import { Lock, Megaphone, Users } from "lucide-react";
+import { Inbox, Lock, Megaphone, Users } from "lucide-react";
 import { PageShell } from "@/components/prison/PageShell";
 import { GuestsAdmin } from "@/components/prison/GuestsAdmin";
+import { ApplicationsAdmin } from "@/components/prison/ApplicationsAdmin";
 import {
   adminLogin,
   adminLogout,
@@ -60,7 +61,8 @@ function AdminPage() {
   const [unlocked, setUnlocked] = useState<boolean | null>(null);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [tab, setTab] = useState<"board" | "guests">("guests");
+  const [tab, setTab] = useState<"board" | "guests" | "apps">("guests");
+  const [appCount, setAppCount] = useState(0);
   const [bulletins, setBulletins] = useState<BulletinRow[]>([]);
   const [draft, setDraft] = useState<BulletinDraft>({ ...emptyBulletin });
   const [busy, setBusy] = useState(false);
@@ -134,6 +136,7 @@ function AdminPage() {
   const stats = [
     { key: "guests" as const, label: "Custom guest files", value: guestCount, sub: "edits & additions", Icon: Users },
     { key: "board" as const, label: "Bulletins", value: bulletins.length, sub: `${bulletins.filter((b) => b.published).length} live`, Icon: Megaphone },
+    { key: "apps" as const, label: "Entry requests", value: appCount, sub: "accept or reject", Icon: Inbox },
   ];
 
   return (
@@ -152,7 +155,7 @@ function AdminPage() {
         </button>
       </div>
 
-      <div className="mb-10 grid gap-4 sm:grid-cols-2">
+      <div className="mb-10 grid gap-4 sm:grid-cols-3">
         {stats.map(({ key, label, value, sub, Icon }) => (
           <button
             key={key}
@@ -174,6 +177,8 @@ function AdminPage() {
 
       {tab === "guests" ? (
         <GuestsAdmin onCount={setGuestCount} />
+      ) : tab === "apps" ? (
+        <ApplicationsAdmin onCount={setAppCount} />
       ) : (
         <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
           <form
