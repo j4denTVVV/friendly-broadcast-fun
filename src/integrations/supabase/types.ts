@@ -18,6 +18,12 @@ export type Database = {
         Row: {
           contact: string | null
           created_at: string
+          decision_email_error: string | null
+          decision_email_sent: boolean
+          decision_email_sent_at: string | null
+          decision_email_status: string | null
+          decision_email_to: string | null
+          decision_email_type: string | null
           handle: string
           id: string
           links: string | null
@@ -31,6 +37,12 @@ export type Database = {
         Insert: {
           contact?: string | null
           created_at?: string
+          decision_email_error?: string | null
+          decision_email_sent?: boolean
+          decision_email_sent_at?: string | null
+          decision_email_status?: string | null
+          decision_email_to?: string | null
+          decision_email_type?: string | null
           handle: string
           id?: string
           links?: string | null
@@ -44,6 +56,12 @@ export type Database = {
         Update: {
           contact?: string | null
           created_at?: string
+          decision_email_error?: string | null
+          decision_email_sent?: boolean
+          decision_email_sent_at?: string | null
+          decision_email_status?: string | null
+          decision_email_to?: string | null
+          decision_email_type?: string | null
           handle?: string
           id?: string
           links?: string | null
