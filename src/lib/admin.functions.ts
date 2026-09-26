@@ -64,6 +64,12 @@ export type ApplicationRow = {
   notes: string | null;
   created_at: string;
   reviewed_at: string | null;
+  decision_email_sent: boolean;
+  decision_email_sent_at: string | null;
+  decision_email_type: string | null;
+  decision_email_status: string | null;
+  decision_email_to: string | null;
+  decision_email_error: string | null;
 };
 
 export const listApplications = createServerFn({ method: "POST" }).handler(async () => {
@@ -77,35 +83,49 @@ export const listApplications = createServerFn({ method: "POST" }).handler(async
   return (data ?? []) as ApplicationRow[];
 });
 
+const EMAIL_RE = /^[^\s@<>,]+@[^\s@<>,]+\.[^\s@<>,]+$/;
+
+/** Sets status. For ACCEPTED/REJECTED with sendEmail=true, sends the branded decision email and records the result. */
 export const setApplicationStatus = createServerFn({ method: "POST" })
-  .inputValidator((data: { id: string; status: string; notes?: string }) => data)
+  .inputValidator((data: { id: string; status: string; sendEmail?: boolean }) => {
+    if (!["PENDING", "ACCEPTED", "REJECTED"].includes(data.status)) throw new Error("Invalid status");
+    return data;
+  })
   .handler(async ({ data }) => {
     await requireAdmin();
     const db = await admin();
     const { error } = await db
       .from("applications")
-      .update({
-        status: data.status,
-        notes: data.notes ?? null,
-        reviewed_at: new Date().toISOString(),
-      })
+      .update({ status: data.status, reviewed_at: new Date().toISOString() })
       .eq("id", data.id);
     if (error) throw new Error(error.message);
-    let emailed = false;
-    if (data.status === "REJECTED") {
-      const { data: app } = await db.from("applications").select("name, contact").eq("id", data.id).maybeSingle();
-      const to = app?.contact?.trim() ?? "";
-      if (/^[^\s@<>,]+@[^\s@<>,]+\.[^\s@<>,]+$/.test(to)) {
-        const { sendGmail } = await import("./gmail.server");
-        await sendGmail(
-          to,
-          "Your Prison Stream application",
-          `Hi ${app?.name ?? "there"},\n\nThank you for applying to Prison Stream. After review, your application has not been accepted this time.${data.notes ? `\n\nNote from the team: ${data.notes}` : ""}\n\nThank you for your interest.\n\n— Prison Stream`,
-        );
-        emailed = true;
-      }
+    if (data.status === "PENDING" || !data.sendEmail) return { ok: true as const, email: "skipped" as const };
+
+    const { data: app } = await db.from("applications").select("name, contact").eq("id", data.id).maybeSingle();
+    const to = app?.contact?.trim() ?? "";
+    if (!EMAIL_RE.test(to)) {
+      await db.from("applications").update({ decision_email_status: "FAILED", decision_email_type: data.status, decision_email_to: to || null, decision_email_error: "No valid email on file" }).eq("id", data.id);
+      return { ok: true as const, email: "failed" as const, error: "No valid email on file" };
     }
-    return { ok: true as const, emailed };
+    try {
+      const { buildDecisionEmail } = await import("./decision-email.server");
+      const { sendGmail } = await import("./gmail.server");
+      const m = buildDecisionEmail(data.status as "ACCEPTED" | "REJECTED", app?.name);
+      await sendGmail(to, m.subject, m.text, m.html);
+      await db.from("applications").update({
+        decision_email_sent: true,
+        decision_email_sent_at: new Date().toISOString(),
+        decision_email_type: data.status,
+        decision_email_status: "SENT",
+        decision_email_to: to,
+        decision_email_error: null,
+      }).eq("id", data.id);
+      return { ok: true as const, email: "sent" as const };
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Unknown error";
+      await db.from("applications").update({ decision_email_status: "FAILED", decision_email_type: data.status, decision_email_to: to, decision_email_error: msg }).eq("id", data.id);
+      return { ok: true as const, email: "failed" as const, error: msg };
+    }
   });
 
 export const deleteApplication = createServerFn({ method: "POST" })
