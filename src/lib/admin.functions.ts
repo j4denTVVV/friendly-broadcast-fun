@@ -70,6 +70,7 @@ export type ApplicationRow = {
   decision_email_status: string | null;
   decision_email_to: string | null;
   decision_email_error: string | null;
+  email_log?: { at: string; type: string; status: string; to: string | null; error?: string | null }[];
 };
 
 export const listApplications = createServerFn({ method: "POST" }).handler(async () => {
@@ -101,10 +102,15 @@ export const setApplicationStatus = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     if (data.status === "PENDING" || !data.sendEmail) return { ok: true as const, email: "skipped" as const };
 
-    const { data: app } = await db.from("applications").select("name, contact").eq("id", data.id).maybeSingle();
+    const { data: app } = await db.from("applications").select("name, contact, email_log").eq("id", data.id).maybeSingle();
     const to = app?.contact?.trim() ?? "";
+    const prior = Array.isArray(app?.email_log) ? (app.email_log as unknown[]) : [];
+    const log = (status: string, error: string | null = null) => [
+      ...prior,
+      { at: new Date().toISOString(), type: data.status, status, to: to || null, error },
+    ];
     if (!EMAIL_RE.test(to)) {
-      await db.from("applications").update({ decision_email_status: "FAILED", decision_email_type: data.status, decision_email_to: to || null, decision_email_error: "No valid email on file" }).eq("id", data.id);
+      await db.from("applications").update({ decision_email_status: "FAILED", decision_email_type: data.status, decision_email_to: to || null, decision_email_error: "No valid email on file", email_log: log("FAILED", "No valid email on file") }).eq("id", data.id);
       return { ok: true as const, email: "failed" as const, error: "No valid email on file" };
     }
     try {
@@ -119,11 +125,12 @@ export const setApplicationStatus = createServerFn({ method: "POST" })
         decision_email_status: "SENT",
         decision_email_to: to,
         decision_email_error: null,
+        email_log: log("SENT"),
       }).eq("id", data.id);
       return { ok: true as const, email: "sent" as const };
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Unknown error";
-      await db.from("applications").update({ decision_email_status: "FAILED", decision_email_type: data.status, decision_email_to: to, decision_email_error: msg }).eq("id", data.id);
+      await db.from("applications").update({ decision_email_status: "FAILED", decision_email_type: data.status, decision_email_to: to, decision_email_error: msg, email_log: log("FAILED", msg) }).eq("id", data.id);
       return { ok: true as const, email: "failed" as const, error: msg };
     }
   });

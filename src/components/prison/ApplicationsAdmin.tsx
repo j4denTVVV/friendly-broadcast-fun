@@ -79,6 +79,16 @@ export function ApplicationsAdmin({ onCount }: { onCount: (n: number) => void })
             {a.decision_email_type ? <p>Decision: {a.decision_email_type}</p> : null}
             {a.decision_email_to ? <p className="normal-case">Sent to: {a.decision_email_to}</p> : null}
             {a.decision_email_sent_at ? <p>Sent: {new Date(a.decision_email_sent_at).toLocaleString()}</p> : null}
+            {a.email_log && a.email_log.length > 0 ? (
+              <ul className="space-y-0.5 border-t border-border/50 pt-2">
+                {[...a.email_log].reverse().map((e, i) => (
+                  <li key={i} className="normal-case">
+                    <span className={e.status === "FAILED" ? "text-destructive" : "text-rust"}>{e.status}</span> · {e.type} · {new Date(e.at).toLocaleString()}
+                    {e.error ? ` — ${e.error}` : ""}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
             {a.decision_email_status === "FAILED" ? (
               <div className="flex items-center gap-3 pt-1">
                 <span className="text-destructive">Email failed to send{a.decision_email_error ? ` — ${a.decision_email_error}` : ""}</span>
@@ -115,7 +125,7 @@ export function ApplicationsAdmin({ onCount }: { onCount: (n: number) => void })
               <>
                 <p className="font-display text-lg tracking-[0.18em] uppercase">Decision email already sent</p>
                 <p className="text-sm text-muted-foreground">
-                  This applicant has already received an {confirm.status === "ACCEPTED" ? "ACCEPTANCE" : "REJECTION"} email. Send again?
+                  This applicant has already received {confirm.status === "ACCEPTED" ? "an" : "a"} {confirm.status === "ACCEPTED" ? "ACCEPTANCE" : "REJECTION"} email. Send again?
                 </p>
               </>
             ) : (
