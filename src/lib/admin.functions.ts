@@ -110,7 +110,7 @@ export const setApplicationStatus = createServerFn({ method: "POST" })
     try {
       const { buildDecisionEmail } = await import("./decision-email.server");
       const { sendGmail } = await import("./gmail.server");
-      const m = buildDecisionEmail(data.status as "ACCEPTED" | "REJECTED", app?.name);
+      const m = buildDecisionEmail(data.status as "ACCEPTED" | "REJECTED", app?.name, data.id);
       await sendGmail(to, m.subject, m.text, m.html);
       await db.from("applications").update({
         decision_email_sent: true,

@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "sonner";
 import { Atmosphere } from "@/components/prison/Atmosphere";
 import { SiteHeader } from "@/components/prison/SiteHeader";
+import { SiteBanner } from "@/components/prison/SiteBanner";
 import { SiteFooter } from "@/components/prison/SiteFooter";
 
 function NotFoundComponent() {
@@ -132,6 +133,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Atmosphere />
+      <SiteBanner />
       <SiteHeader />
       <main className="relative z-10 min-h-screen">
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
