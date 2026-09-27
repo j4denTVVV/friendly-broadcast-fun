@@ -104,7 +104,7 @@ export const setApplicationStatus = createServerFn({ method: "POST" })
 
     const { data: app } = await db.from("applications").select("name, contact, email_log").eq("id", data.id).maybeSingle();
     const to = app?.contact?.trim() ?? "";
-    const prior = Array.isArray(app?.email_log) ? (app.email_log as unknown[]) : [];
+    const prior = (Array.isArray(app?.email_log) ? app.email_log : []) as import("@/integrations/supabase/types").Json[];
     const log = (status: string, error: string | null = null) => [
       ...prior,
       { at: new Date().toISOString(), type: data.status, status, to: to || null, error },
