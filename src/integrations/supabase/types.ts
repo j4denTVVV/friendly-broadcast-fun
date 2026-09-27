@@ -24,6 +24,7 @@ export type Database = {
           decision_email_status: string | null
           decision_email_to: string | null
           decision_email_type: string | null
+          email_log: Json
           handle: string
           id: string
           links: string | null
@@ -43,6 +44,7 @@ export type Database = {
           decision_email_status?: string | null
           decision_email_to?: string | null
           decision_email_type?: string | null
+          email_log?: Json
           handle: string
           id?: string
           links?: string | null
@@ -62,6 +64,7 @@ export type Database = {
           decision_email_status?: string | null
           decision_email_to?: string | null
           decision_email_type?: string | null
+          email_log?: Json
           handle?: string
           id?: string
           links?: string | null
