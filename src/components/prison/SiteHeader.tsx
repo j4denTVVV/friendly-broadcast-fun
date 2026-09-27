@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { SoundToggle } from "./SoundToggle";
 import { StatusDot } from "./Classified";
+import { SiteBanner } from "./SiteBanner";
 import logoAsset from "@/assets/ps-logo.png";
 
 export const navLinks = [
@@ -22,6 +23,7 @@ export function SiteHeader() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">
+      <SiteBanner />
       <div className="hazard-strip h-[3px] w-full opacity-30" />
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Link to="/" className="group flex items-center gap-3">

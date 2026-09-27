@@ -429,3 +429,22 @@
     animation: none !important;
   }
 }
+
+/* Site banner — black & distressed white, geometric like the Prison Stream logo */
+.site-banner { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+.site-banner-grain {
+  background-image:
+    repeating-linear-gradient(115deg, transparent 0 6px, color-mix(in oklab, var(--foreground) 5%, transparent) 6px 7px),
+    radial-gradient(circle at 20% 40%, color-mix(in oklab, var(--foreground) 8%, transparent) 0 1px, transparent 2px);
+  background-size: auto, 9px 9px;
+  opacity: .7;
+}
+.site-banner-text { text-shadow: 0 0 1px var(--foreground), 1px 1px 0 var(--background); filter: contrast(1.2); }
+.site-banner-chevron {
+  width: 14px; height: 14px; flex: none;
+  background: var(--foreground);
+  clip-path: polygon(0 50%, 60% 0, 100% 0, 40% 50%, 100% 100%, 60% 100%);
+}
+.site-banner-bars { display: inline-flex; gap: 3px; flex: none; }
+.site-banner-bars i { display: block; width: 3px; height: 12px; background: var(--foreground); transform: skewX(-15deg); }
+@media (max-width: 640px) { .site-banner-bars { display: none; } }
