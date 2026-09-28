@@ -25,7 +25,11 @@ export function BannerAdmin() {
     const messages = [...current.messages];
     const next = index + direction;
     if (next < 0 || next >= messages.length) return current;
-    [messages[index], messages[next]] = [messages[next], messages[index]];
+    const first = messages[index];
+    const second = messages[next];
+    if (!first || !second) return current;
+    messages[index] = second;
+    messages[next] = first;
     return { ...current, messages };
   });
 
