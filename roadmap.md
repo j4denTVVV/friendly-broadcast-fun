@@ -1,5 +1,7 @@
 # Prison Stream — roadmap
 
+- [ ] Upgrade the restricted control room styling and access screen
+- [ ] Add rotating banner messages with selectable animations
 - [x] Remove MrCloutGlasses from the database
 - [x] Rename AmirIDidIt to 4DIDIT (old name still searchable)
 - [x] New primeDehaney photo

@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep the shared-password admin session as the sole gate for privileged server functions; the control-room effects are presentation only, not access control.
+- Store ordered banner messages and their animations in `site_banner.messages` while retaining `message` and `link` as first-item compatibility fields; existing readers and data stay intact.

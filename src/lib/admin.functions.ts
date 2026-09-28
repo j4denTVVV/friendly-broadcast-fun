@@ -307,22 +307,32 @@ export const uploadGuestPhoto = createServerFn({ method: "POST" })
     return { url: `/api/public/guest-photo/${path}` };
   });
 
-export type BannerRow = { message: string; link: string | null; enabled: boolean };
+export type BannerMessage = { text: string; link: string | null; animation: "slide" | "typewriter" | "glitch" };
+export type BannerRow = { message: string; link: string | null; enabled: boolean; messages: BannerMessage[] };
 
 export const getBannerAdmin = createServerFn({ method: "POST" }).handler(async () => {
   await requireAdmin();
   const db = await admin();
-  const { data, error } = await db.from("site_banner").select("message, link, enabled").eq("id", 1).maybeSingle();
+  const { data, error } = await db.from("site_banner").select("message, link, enabled, messages").eq("id", 1).maybeSingle();
   if (error) throw new Error(error.message);
-  return (data ?? { message: "", link: null, enabled: false }) as BannerRow;
+  return (data ?? { message: "", link: null, enabled: false, messages: [] }) as BannerRow;
 });
 
 export const saveBanner = createServerFn({ method: "POST" })
-  .inputValidator((data: BannerRow) => ({
-    message: String(data.message ?? "").slice(0, 200),
-    link: data.link ? String(data.link).slice(0, 500) : null,
-    enabled: !!data.enabled,
-  }))
+  .inputValidator((data: BannerRow) => {
+    const messages = (Array.isArray(data.messages) ? data.messages : []).slice(0, 12).map((entry) => ({
+      text: String(entry.text ?? "").trim().slice(0, 200),
+      link: entry.link ? String(entry.link).trim().slice(0, 500) : null,
+      animation: (["slide", "typewriter", "glitch"].includes(entry.animation) ? entry.animation : "slide") as BannerMessage["animation"],
+    })).filter((entry) => entry.text);
+    if (data.enabled && messages.length === 0) throw new Error("Add a message before showing the banner");
+    return {
+      message: messages[0]?.text ?? "",
+      link: messages[0]?.link ?? null,
+      messages,
+      enabled: !!data.enabled,
+    };
+  })
   .handler(async ({ data }) => {
     await requireAdmin();
     const db = await admin();

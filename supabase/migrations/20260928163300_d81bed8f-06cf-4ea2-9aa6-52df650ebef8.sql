@@ -1,0 +1,1 @@
+ALTER TABLE public.site_banner ADD COLUMN messages jsonb NOT NULL DEFAULT '[]'::jsonb; UPDATE public.site_banner SET messages = jsonb_build_array(jsonb_build_object('text', message, 'link', link, 'animation', 'slide')) WHERE trim(message) <> '' AND messages = '[]'::jsonb;
