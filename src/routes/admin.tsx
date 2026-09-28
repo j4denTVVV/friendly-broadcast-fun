@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useState } from "react";
-import { Flag, Inbox, Lock, Megaphone, Users } from "lucide-react";
+import { ArrowRight, Flag, Inbox, Lock, Megaphone, ShieldAlert, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import logoAsset from "@/assets/ps-logo.png";
 import { PageShell } from "@/components/prison/PageShell";
 import { GuestsAdmin } from "@/components/prison/GuestsAdmin";
 import { ApplicationsAdmin } from "@/components/prison/ApplicationsAdmin";
@@ -68,6 +70,7 @@ function AdminPage() {
   const [draft, setDraft] = useState<BulletinDraft>({ ...emptyBulletin });
   const [busy, setBusy] = useState(false);
   const [guestCount, setGuestCount] = useState(0);
+  const [accessing, setAccessing] = useState(false);
 
   const refresh = useCallback(async () => {
     const [b, g] = await Promise.all([loadBulletins({}), loadGuests({})]);
@@ -95,7 +98,11 @@ function AdminPage() {
       }
       setUnlocked(true);
       setPassword("");
+      setAccessing(true);
+      window.setTimeout(() => setAccessing(false), 900);
       await refresh();
+    } catch {
+      setError("Connection interrupted. Try again.");
     } finally {
       setBusy(false);
     }
@@ -103,34 +110,38 @@ function AdminPage() {
 
   if (unlocked === null) {
     return (
-      <PageShell kicker="Restricted" title="Control room">
-        <p className="label-mono animate-flicker">Verifying clearance…</p>
-      </PageShell>
+      <div className="admin-entry flex min-h-screen items-center justify-center pt-24"><p className="label-mono animate-flicker text-warning">Verifying clearance…</p></div>
     );
   }
 
   if (!unlocked) {
     return (
-      <PageShell kicker="Restricted" title="Control room">
-        <form onSubmit={onLogin} className="panel animate-siren max-w-md space-y-4 p-8">
-          <label className="label-mono block text-rust">Staff passcode</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-            className="hairline w-full bg-background/70 px-3 py-3 font-mono text-sm outline-none focus:border-rust"
-          />
-          {error ? <p className="font-mono text-xs tracking-[0.2em] text-destructive uppercase">{error}</p> : null}
-          <button
-            type="submit"
-            disabled={busy}
-            className="hairline w-full bg-card/60 px-4 py-3 font-mono text-[11px] tracking-[0.3em] uppercase transition-colors hover:border-rust hover:text-foreground disabled:opacity-50"
-          >
-            {busy ? "Checking…" : "Unlock"}
-          </button>
-        </form>
-      </PageShell>
+      <main className="admin-entry relative flex min-h-screen flex-col overflow-hidden pt-28">
+        <div aria-hidden className="admin-entry-beam" />
+        <div className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-5 py-16 sm:px-10 lg:py-24">
+          <div className="mb-8 flex items-center gap-3 font-mono text-[10px] uppercase tracking-widest text-warning"><ShieldAlert className="size-4" /> Restricted access <span className="h-px w-12 bg-warning/50" /> 01 / 01</div>
+          <div className="grid items-end gap-12 lg:grid-cols-[1.2fr_0.8fr] lg:gap-20">
+            <div className="relative">
+              <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Prison Stream / internal network</p>
+              <h1 className="admin-glitch-title mt-5 max-w-[850px] font-display text-[clamp(5rem,12vw,11rem)] leading-[0.76] font-bold uppercase" data-text="CONTROL ROOM">CONTROL<br />ROOM<span className="text-warning">.</span></h1>
+              <div className="mt-8 flex items-center gap-4"><span className="h-px w-14 bg-warning" /><p className="font-mono text-[11px] uppercase tracking-widest text-warning">Unauthorised entry prohibited</p></div>
+              <p className="mt-6 max-w-md text-lg leading-snug text-muted-foreground">This area is not part of the public transmission.</p>
+              <img src={logoAsset} alt="" className="mt-12 w-16 opacity-60" />
+            </div>
+            <form onSubmit={onLogin} className="admin-access relative border-t-2 border-warning bg-card/70 p-6 sm:p-8 lg:mb-3" aria-label="Staff access">
+              <div className="mb-10 flex items-center justify-between"><span className="font-mono text-[10px] uppercase tracking-widest text-warning">Access terminal</span><span className="font-mono text-[10px] text-muted-foreground">PS // AUTH-01</span></div>
+              <h2 className="font-display text-4xl leading-none uppercase">Identify yourself.</h2>
+              <p className="mt-3 text-sm text-muted-foreground">Staff credentials required to proceed.</p>
+              <label htmlFor="staff-passcode" className="mt-10 block font-mono text-[10px] uppercase tracking-widest text-warning">Staff passcode</label>
+              <input id="staff-passcode" required type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" className="mt-3 h-13 w-full rounded-none border border-border bg-background px-4 font-mono text-base tracking-widest outline-none transition-colors focus:border-warning" placeholder="••••••••••••" />
+              {error && <p role="alert" className="mt-3 font-mono text-xs uppercase text-destructive">{error}</p>}
+              <Button type="submit" disabled={busy} className="mt-5 flex h-13 w-full justify-between rounded-none bg-warning px-5 font-mono text-xs uppercase tracking-widest text-background hover:bg-warning/85">{busy ? "Verifying…" : "Request clearance"}<ArrowRight /></Button>
+              <div className="mt-9 flex justify-between border-t border-border pt-4 font-mono text-[9px] uppercase tracking-widest text-muted-foreground"><span>Encrypted channel</span><span>Internal use only</span></div>
+            </form>
+          </div>
+        </div>
+        <div className="admin-warning-band border-y border-warning/50 py-2 text-center font-mono text-[10px] uppercase tracking-widest text-warning">Restricted // Surveillance active // Restricted // Surveillance active</div>
+      </main>
     );
   }
 
@@ -142,38 +153,40 @@ function AdminPage() {
   ];
 
   return (
-    <PageShell kicker="Restricted" title="Control room">
-      <div className="mb-8 flex items-center gap-3">
-        <span className="h-2 w-2 animate-pulse rounded-full bg-rust" />
-        <span className="label-mono">Clearance granted · all changes go live instantly</span>
-        <button
+    <PageShell kicker="Internal network / Clearance granted" title="Control room">
+      {accessing && <div aria-live="polite" className="admin-access-flash fixed inset-0 z-[60] flex items-center justify-center bg-background font-display text-5xl uppercase text-warning">Access granted</div>}
+      <div className="mb-8 flex flex-wrap items-center gap-3 border-y border-border py-4">
+        <span className="h-2 w-2 animate-pulse rounded-full bg-warning" />
+        <span className="label-mono">Secure session active <span className="text-warning">/</span> Changes go live instantly</span>
+        <Button variant="outline" size="sm"
           onClick={async () => {
             await logout({});
             setUnlocked(false);
           }}
-          className="hairline ml-auto flex items-center gap-2 bg-card/40 px-4 py-2 font-mono text-[11px] tracking-[0.25em] text-muted-foreground uppercase hover:border-rust hover:text-foreground"
+          className="ml-auto rounded-none border-border bg-card/40 font-mono text-[11px] uppercase text-muted-foreground hover:border-warning hover:text-foreground"
         >
           <Lock className="h-3.5 w-3.5" /> Lock
-        </button>
+        </Button>
       </div>
 
-      <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map(({ key, label, value, sub, Icon }) => (
-          <button
+      <div className="mb-10 grid border border-border sm:grid-cols-2 lg:grid-cols-4" role="tablist" aria-label="Control room sections">
+        {stats.map(({ key, label, value, sub, Icon }, i) => (
+          <Button variant="ghost"
             key={key}
+            role="tab"
+            aria-selected={tab === key}
             onClick={() => setTab(key)}
-            className={`panel group relative overflow-hidden p-5 text-left transition-all hover:-translate-y-0.5 hover:border-rust ${
-              tab === key ? "border-rust" : ""
+            className={`admin-section relative h-auto min-h-36 flex-col items-start justify-between rounded-none border-b border-border p-5 text-left transition-colors hover:bg-warning/5 sm:border-b-0 ${i > 0 ? "lg:border-l" : ""} ${
+              tab === key ? "bg-warning/10" : "bg-card/30"
             }`}
           >
-            {tab === key ? <span className="absolute inset-x-0 top-0 h-0.5 bg-rust" /> : null}
-            <div className="flex items-center justify-between">
-              <span className="label-mono">{label}</span>
-              <Icon className={`h-4 w-4 ${tab === key ? "text-rust" : "text-muted-foreground"}`} />
+            {tab === key && <span className="absolute inset-x-0 top-0 h-0.5 bg-warning" />}
+            <div className="flex w-full items-center justify-between">
+              <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">0{i + 1} / {label}</span>
+              <Icon className={`h-4 w-4 ${tab === key ? "text-warning" : "text-muted-foreground"}`} />
             </div>
-            <p className="font-display mt-3 text-4xl tracking-[0.1em]">{value}</p>
-            <p className="label-mono mt-1 text-rust">{sub}</p>
-          </button>
+            <div><p className="font-display text-5xl leading-none text-foreground">{value}</p><p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-warning">{sub}</p></div>
+          </Button>
         ))}
       </div>
 
