@@ -157,7 +157,7 @@ function Index() {
           <SectionHeading
             kicker={terms.group}
             title="Who's inside?"
-            subtitle="The names are coming. Some identities may already be behind these doors — none have been cleared for release."
+             subtitle="Every file is on the roster. Most identities stay sealed until you guess their names in the clearance database."
           />
         </Reveal>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
