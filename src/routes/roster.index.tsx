@@ -19,6 +19,8 @@ export const Route = createFileRoute("/roster/")({
       },
       { property: "og:title", content: "The Roster — PRISON STREAM" },
       { property: "og:description", content: "Identities classified. The names are coming." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: RosterPage,
@@ -43,16 +45,16 @@ function RosterPage() {
 
   const grouped = ROLE_GROUPS.map((g) => ({
     ...g,
-    entries: files.filter((f) => f.revealed && g.match(f.role)),
+    entries: files.filter((f) => g.match(f.role)),
   })).filter((g) => g.entries.length > 0);
-  const inmates = files.filter((f) => !f.revealed || !ROLE_GROUPS.some((g) => g.match(f.role)));
+  const inmates = files.filter((f) => !ROLE_GROUPS.some((g) => g.match(f.role)));
   const sections = [...grouped, { key: "inmates", label: "Inmates", entries: inmates }];
 
   return (
     <PageShell
       kicker={terms.group}
       title="Who's inside?"
-      subtitle="Three files are cleared for open release. The rest are sealed — find them by name in the clearance database and they are added here. File numbers are placeholders; they do not indicate how many people are inside."
+      subtitle="Every file has a place here. Most identities are sealed — guess a name in the clearance database to unseal its file."
     >
       <div className="mb-10 max-w-md">
         <ClassifiedPanel title="Clearance summary">
@@ -62,7 +64,7 @@ function RosterPage() {
             value={revealedCount === 0 ? "NONE" : String(revealedCount).padStart(2, "0")}
             tone={revealedCount === 0 ? "muted" : "ok"}
           />
-          <DataRow label="Occupants" value="UNKNOWN" tone="muted" />
+          <DataRow label="Files on record" value={String(files.length).padStart(2, "0")} tone="muted" />
           <DataRow label="Next reveal" value="UNKNOWN" tone="warn" />
         </ClassifiedPanel>
       </div>
@@ -82,7 +84,7 @@ function RosterPage() {
             <div className="mb-5 flex items-center gap-4">
               <h2 className="font-display text-xl tracking-[0.25em] uppercase">{section.label}</h2>
               <span className="label-mono text-muted-foreground">
-                {String(section.entries.filter((e) => e.revealed).length).padStart(2, "0")} FILES
+                {String(section.entries.length).padStart(2, "0")} FILES
               </span>
               <div className="hairline h-px flex-1 border-t" />
             </div>

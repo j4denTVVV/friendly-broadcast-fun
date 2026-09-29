@@ -1,4 +1,4 @@
-import { placeholderFiles, roster as baseRoster, type RosterEntry } from "@/config/prison";
+import { roster as baseRoster, type RosterEntry } from "@/config/prison";
 
 /** Guests added from the control room, merged in at runtime. */
 let guestEntries: RosterEntry[] = [];
@@ -20,7 +20,7 @@ function allEntries(): RosterEntry[] {
   return [...merged, ...overrides.values()];
 }
 
-/** Real announcements first, then unnamed placeholder files. */
+/** Visitors only see the identities they have personally unsealed. */
 export const UNSEALED_STORAGE_KEY = "ps-unsealed-files";
 
 /** File numbers the visitor has personally unsealed through the reveals search. */
@@ -35,23 +35,16 @@ export function readUnsealedFiles(): string[] {
   }
 }
 
-/**
- * Files shown publicly on the roster: those cleared for open release, plus any
- * file this visitor has unsealed via the reveals search terminal.
- */
+/** Every real file gets a slot; only public or personally unsealed files show details. */
 export function getRosterFiles(unsealed: string[] = []): RosterEntry[] {
-  const revealed = allEntries().filter(
-    (r) => r.revealed && (clearanceOf(r) === "REVEALED" || unsealed.includes(r.file)),
-  );
-  const used = new Set(revealed.map((r) => r.file));
-  const placeholders: RosterEntry[] = [];
-  let n = 1;
-  while (placeholders.length < Math.max(0, placeholderFiles)) {
-    const file = String(n).padStart(3, "0");
-    if (!used.has(file)) placeholders.push({ file, revealed: false });
-    n++;
-  }
-  return [...revealed, ...placeholders];
+  return allEntries()
+    .filter((r) => r.revealed)
+    .sort((a, b) => a.file.localeCompare(b.file, undefined, { numeric: true }))
+    .map((entry) =>
+      clearanceOf(entry) === "REVEALED" || unsealed.includes(entry.file)
+        ? entry
+        : { file: entry.file, revealed: false, ...(entry.role ? { role: entry.role } : {}) },
+    );
 }
 
 export function findFile(fileId: string, unsealed: string[] = []): RosterEntry {
