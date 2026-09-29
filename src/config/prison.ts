@@ -61,9 +61,8 @@ export const projectFile = [
 
 /** ---------------------------------------------------------------------
  * ROSTER
- * Nobody has been officially revealed. Add entries as announcements happen;
- * `placeholderFiles` only controls how many empty files are displayed and
- * does NOT imply a participant count.
+ * Every active entry has a numbered roster slot. Only publicly released or
+ * personally unsealed files show identities to visitors.
  * ------------------------------------------------------------------- */
 import xkeonteAsset from "@/assets/xkeonte-portrait.jpg";
 import hassynainAsset from "@/assets/hassynain.png";
@@ -131,8 +130,6 @@ export type RosterEntry = {
   role?: string;
 };
 
-
-export const placeholderFiles = 6;
 
 export const roster: RosterEntry[] = [
   {

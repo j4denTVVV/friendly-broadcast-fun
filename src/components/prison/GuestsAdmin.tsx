@@ -30,7 +30,7 @@ const empty = {
   bio: "",
   image_url: "",
   socialsText: "",
-  clearance: "REVEALED",
+  clearance: "CONFIRMED",
   published: true,
 };
 type Draft = typeof empty & { id?: string };
@@ -117,7 +117,7 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
       bio: row?.bio ?? base?.bio ?? "",
       image_url: row?.image_url ?? "",
       socialsText: (row?.socials ?? base?.socials ?? []).map((s) => `${s.platform} | ${s.url}`).join("\n"),
-      clearance: row?.clearance ?? base?.clearance ?? "REVEALED",
+      clearance: row?.clearance ?? base?.clearance ?? "CONFIRMED",
       published: row?.published ?? true,
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -284,9 +284,9 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
               onChange={(e) => setDraft({ ...draft, clearance: e.target.value })}
               className={input}
             >
-              <option value="REVEALED">On roster (public)</option>
-              <option value="CONFIRMED">Hidden until searched</option>
-              <option value="CLASSIFIED">Classified</option>
+              <option value="REVEALED">Identity public</option>
+              <option value="CONFIRMED">Sealed file — reveal on search</option>
+              <option value="CLASSIFIED">Sealed file — cannot reveal yet</option>
             </select>
           </div>
           <label className="hairline mt-6 flex cursor-pointer items-center justify-between bg-background/50 px-4 py-2.5">

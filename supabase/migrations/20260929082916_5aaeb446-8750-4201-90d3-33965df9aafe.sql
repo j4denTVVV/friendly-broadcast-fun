@@ -1,0 +1,1 @@
+UPDATE public.guests SET clearance = 'CONFIRMED', updated_at = now() WHERE file = '005' AND clearance = 'REVEALED' AND deleted = false;

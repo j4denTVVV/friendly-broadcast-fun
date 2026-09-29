@@ -1,5 +1,6 @@
 # Prison Stream — roadmap
 
+- [x] Show every real file as a sealed roster slot and hide unrevealed creator socials until search
 - [ ] Upgrade the restricted control room styling and access screen
 - [ ] Add rotating banner messages with selectable animations
 - [x] Remove MrCloutGlasses from the database

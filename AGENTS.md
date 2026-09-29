@@ -11,3 +11,4 @@
 
 - Keep the shared-password admin session as the sole gate for privileged server functions; the control-room effects are presentation only, not access control.
 - Store ordered banner messages and their animations in `site_banner.messages` while retaining `message` and `link` as first-item compatibility fields; existing readers and data stay intact.
+- Build public roster slots and creator channels through the same per-visitor unsealing filter, so sealed identities do not appear in visible pages before search.
