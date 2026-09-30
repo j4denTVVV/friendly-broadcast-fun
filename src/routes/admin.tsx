@@ -5,6 +5,7 @@ import { ArrowRight, Flag, Inbox, Lock, Megaphone, ShieldAlert, Users } from "lu
 import { Button } from "@/components/ui/button";
 import logoAsset from "@/assets/ps-logo.png";
 import { PageShell } from "@/components/prison/PageShell";
+import { SystemTicker } from "@/components/prison/SystemTicker";
 import { GuestsAdmin } from "@/components/prison/GuestsAdmin";
 import { ApplicationsAdmin } from "@/components/prison/ApplicationsAdmin";
 import { BannerAdmin } from "@/components/prison/BannerAdmin";
@@ -110,85 +111,103 @@ function AdminPage() {
 
   if (unlocked === null) {
     return (
-      <div className="admin-entry flex min-h-screen items-center justify-center pt-24"><p className="label-mono animate-flicker text-warning">Verifying clearance…</p></div>
+      <div className="admin-theme admin-entry flex min-h-screen items-center justify-center pt-24"><p className="label-mono animate-flicker text-destructive">Verifying clearance…</p></div>
     );
   }
 
   if (!unlocked) {
     return (
-      <main className="admin-entry relative flex min-h-screen flex-col overflow-hidden pt-28">
-        <div aria-hidden className="admin-entry-beam" />
-        <div className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-5 py-16 sm:px-10 lg:py-24">
-          <div className="mb-8 flex items-center gap-3 font-mono text-[10px] uppercase tracking-widest text-warning"><ShieldAlert className="size-4" /> Restricted access <span className="h-px w-12 bg-warning/50" /> 01 / 01</div>
-          <div className="grid items-end gap-12 lg:grid-cols-[1.2fr_0.8fr] lg:gap-20">
-            <div className="relative">
-              <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Prison Stream / internal network</p>
-              <h1 className="admin-glitch-title mt-5 max-w-[850px] font-display text-[clamp(5rem,12vw,11rem)] leading-[0.76] font-bold uppercase" data-text="CONTROL ROOM">CONTROL<br />ROOM<span className="text-warning">.</span></h1>
-              <div className="mt-8 flex items-center gap-4"><span className="h-px w-14 bg-warning" /><p className="font-mono text-[11px] uppercase tracking-widest text-warning">Unauthorised entry prohibited</p></div>
-              <p className="mt-6 max-w-md text-lg leading-snug text-muted-foreground">This area is not part of the public transmission.</p>
-              <img src={logoAsset} alt="" className="mt-12 w-16 opacity-60" />
-            </div>
-            <form onSubmit={onLogin} className="admin-access relative border-t-2 border-warning bg-card/70 p-6 sm:p-8 lg:mb-3" aria-label="Staff access">
-              <div className="mb-10 flex items-center justify-between"><span className="font-mono text-[10px] uppercase tracking-widest text-warning">Access terminal</span><span className="font-mono text-[10px] text-muted-foreground">PS // AUTH-01</span></div>
-              <h2 className="font-display text-4xl leading-none uppercase">Identify yourself.</h2>
-              <p className="mt-3 text-sm text-muted-foreground">Staff credentials required to proceed.</p>
-              <label htmlFor="staff-passcode" className="mt-10 block font-mono text-[10px] uppercase tracking-widest text-warning">Staff passcode</label>
-              <input id="staff-passcode" required type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" className="mt-3 h-13 w-full rounded-none border border-border bg-background px-4 font-mono text-base tracking-widest outline-none transition-colors focus:border-warning" placeholder="••••••••••••" />
-              {error && <p role="alert" className="mt-3 font-mono text-xs uppercase text-destructive">{error}</p>}
-              <Button type="submit" disabled={busy} className="mt-5 flex h-13 w-full justify-between rounded-none bg-warning px-5 font-mono text-xs uppercase tracking-widest text-background hover:bg-warning/85">{busy ? "Verifying…" : "Request clearance"}<ArrowRight /></Button>
-              <div className="mt-9 flex justify-between border-t border-border pt-4 font-mono text-[9px] uppercase tracking-widest text-muted-foreground"><span>Encrypted channel</span><span>Internal use only</span></div>
-            </form>
+      <main className="admin-theme admin-entry relative min-h-screen px-4 pb-16 pt-32 sm:px-8 lg:pt-40">
+        <div className="admin-terminal mx-auto max-w-6xl">
+          <div className="admin-terminal-stripe h-1.5" />
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-border bg-background px-5 py-4 sm:px-7">
+            <div className="flex items-center gap-3"><span className="admin-led size-2 rounded-full bg-destructive" /><img src={logoAsset} alt="" className="h-7 w-7 object-contain" /><span className="font-mono text-[10px] font-bold uppercase text-foreground sm:text-xs">Prison Stream // Control Room</span></div>
+            <span className="font-mono text-[10px] uppercase text-destructive">● Restricted access</span>
           </div>
+          <div className="grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+            <form onSubmit={onLogin} className="admin-access relative flex flex-col justify-center border-b-2 border-border p-6 sm:p-10 lg:border-b-0 lg:border-r-2" aria-label="Staff access">
+              <div className="flex items-center gap-3 font-mono text-[10px] uppercase text-destructive"><ShieldAlert className="size-4" /> Restricted zone / 01</div>
+              <h1 className="admin-glitch-title mt-6 font-display text-4xl uppercase leading-none sm:text-5xl">Clearance<br />verification<span className="text-destructive">.</span></h1>
+              <p className="mt-5 max-w-sm text-sm text-muted-foreground">This area is not part of the public transmission.</p>
+              <label htmlFor="staff-passcode" className="mt-12 block font-mono text-[10px] uppercase text-muted-foreground">Staff passcode</label>
+              <input id="staff-passcode" required type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" className="mt-3 h-14 w-full rounded-none border-2 border-border bg-background px-4 font-mono text-base text-foreground outline-none transition-colors focus:border-destructive" placeholder="••••••••••••" />
+              {error && <p role="alert" className="mt-3 font-mono text-xs uppercase text-destructive">{error}</p>}
+              <Button type="submit" disabled={busy} className="admin-command-button mt-5 flex h-14 w-full justify-between rounded-none bg-foreground px-5 font-mono text-xs uppercase text-background hover:bg-foreground/85">{busy ? "Verifying…" : "Request clearance"}<ArrowRight className="size-4" /></Button>
+              <div className="mt-10 flex justify-between border-t border-border pt-4 font-mono text-[9px] uppercase text-muted-foreground"><span>Encrypted channel</span><span>Internal use only</span></div>
+            </form>
+            <div className="bg-background/45 p-6 sm:p-10">
+              <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="font-mono text-[10px] uppercase text-destructive">System ready / authorization pending</p><h2 className="mt-3 font-display text-3xl uppercase sm:text-4xl">Command console</h2></div><span className="border-l border-border pl-4 font-mono text-[10px] uppercase text-muted-foreground">04 / Sections</span></div>
+              <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                {[
+                  { label: "Guest files", Icon: Users, detail: "Roster management" },
+                  { label: "Bulletins", Icon: Megaphone, detail: "Public dispatches" },
+                  { label: "Entry requests", Icon: Inbox, detail: "Decision queue" },
+                  { label: "Site banner", Icon: Flag, detail: "Transmission sequence" },
+                ].map(({ label, Icon, detail }, index) => (
+                  <div key={label} className="admin-tool-preview border border-border bg-card/60 p-5">
+                    <div className="flex justify-between"><Icon className="size-5 text-destructive" /><span className="font-mono text-[10px] text-muted-foreground">0{index + 1}</span></div>
+                    <h3 className="mt-8 font-display text-lg uppercase">{label}</h3><p className="mt-1 text-xs text-muted-foreground">{detail}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 border border-border bg-background px-4 py-4 font-mono text-[10px] uppercase text-muted-foreground"><span className="text-destructive">&gt;</span> Awaiting staff clearance<span className="admin-cursor">_</span></div>
+            </div>
+          </div>
+          <div className="flex flex-wrap justify-between gap-2 border-t-2 border-border bg-background px-5 py-3 font-mono text-[9px] uppercase text-muted-foreground sm:px-7"><span>Prison Stream / Internal network</span><span>Unauthorised entry prohibited</span></div>
         </div>
-        <div className="admin-warning-band border-y border-warning/50 py-2 text-center font-mono text-[10px] uppercase tracking-widest text-warning">Restricted // Surveillance active // Restricted // Surveillance active</div>
       </main>
     );
   }
 
   const stats = [
-    { key: "guests" as const, label: "Custom guest files", value: guestCount, sub: "edits & additions", Icon: Users },
+    { key: "guests" as const, label: "Guest files", value: guestCount, sub: "edits & additions", Icon: Users },
     { key: "board" as const, label: "Bulletins", value: bulletins.length, sub: `${bulletins.filter((b) => b.published).length} live`, Icon: Megaphone },
     { key: "apps" as const, label: "Entry requests", value: appCount, sub: "accept or reject", Icon: Inbox },
     { key: "banner" as const, label: "Site banner", value: "▲", sub: "top-of-site notice", Icon: Flag },
   ];
 
   return (
-    <PageShell kicker="Internal network / Clearance granted" title="Control room">
-      {accessing && <div aria-live="polite" className="admin-access-flash fixed inset-0 z-[60] flex items-center justify-center bg-background font-display text-5xl uppercase text-warning">Access granted</div>}
-      <div className="mb-8 flex flex-wrap items-center gap-3 border-y border-border py-4">
-        <span className="h-2 w-2 animate-pulse rounded-full bg-warning" />
-        <span className="label-mono">Secure session active <span className="text-warning">/</span> Changes go live instantly</span>
+    <div className="admin-theme admin-entry min-h-screen pt-24"><SystemTicker /><section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
+      {accessing && <div aria-live="polite" className="admin-access-flash fixed inset-0 z-[60] flex items-center justify-center bg-background font-display text-5xl uppercase text-destructive">Access granted</div>}
+      <div className="admin-terminal-stripe h-1.5" />
+      <div className="flex flex-wrap items-center justify-between gap-4 border-x border-b-2 border-border bg-background px-5 py-4 sm:px-7">
+        <div className="flex items-center gap-3"><span className="admin-led size-2 rounded-full bg-destructive" /><img src={logoAsset} alt="" className="size-7 object-contain" /><span className="font-mono text-[10px] uppercase text-foreground">Prison Stream // Site admin</span></div><span className="font-mono text-[10px] uppercase text-destructive">Secure line / Active</span>
+      </div>
+      <div className="flex flex-wrap items-end justify-between gap-6 border-x border-border bg-card/60 px-5 py-8 sm:px-7 sm:py-10">
+        <div><p className="font-mono text-[10px] uppercase text-destructive">Internal network / Clearance granted</p><h1 className="mt-3 font-display text-4xl uppercase leading-none sm:text-6xl">Control room<span className="text-destructive">.</span></h1><p className="mt-3 text-sm text-muted-foreground">Changes go live instantly.</p></div>
         <Button variant="outline" size="sm"
           onClick={async () => {
             await logout({});
             setUnlocked(false);
           }}
-          className="ml-auto rounded-none border-border bg-card/40 font-mono text-[11px] uppercase text-muted-foreground hover:border-warning hover:text-foreground"
+          className="rounded-none border-border bg-background font-mono text-[11px] uppercase text-foreground hover:border-destructive hover:text-destructive"
         >
           <Lock className="h-3.5 w-3.5" /> Lock
         </Button>
       </div>
 
-      <div className="mb-10 grid border border-border sm:grid-cols-2 lg:grid-cols-4" role="tablist" aria-label="Control room sections">
+      <div className="grid border-2 border-border bg-background sm:grid-cols-2 lg:grid-cols-4" role="tablist" aria-label="Control room sections">
         {stats.map(({ key, label, value, sub, Icon }, i) => (
           <Button variant="ghost"
             key={key}
             role="tab"
             aria-selected={tab === key}
             onClick={() => setTab(key)}
-            className={`admin-section relative h-auto min-h-36 flex-col items-start justify-between rounded-none border-b border-border p-5 text-left transition-colors hover:bg-warning/5 sm:border-b-0 ${i > 0 ? "lg:border-l" : ""} ${
-              tab === key ? "bg-warning/10" : "bg-card/30"
+            className={`admin-section relative h-auto min-h-36 flex-col items-start justify-between rounded-none border-b border-border p-5 text-left transition-colors hover:bg-destructive/5 sm:border-b-0 ${i > 0 ? "lg:border-l" : ""} ${
+              tab === key ? "bg-destructive/10" : "bg-card/30"
             }`}
           >
-            {tab === key && <span className="absolute inset-x-0 top-0 h-0.5 bg-warning" />}
+            {tab === key && <span className="absolute inset-x-0 top-0 h-0.5 bg-destructive" />}
             <div className="flex w-full items-center justify-between">
               <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">0{i + 1} / {label}</span>
-              <Icon className={`h-4 w-4 ${tab === key ? "text-warning" : "text-muted-foreground"}`} />
+              <Icon className={`h-4 w-4 ${tab === key ? "text-destructive" : "text-muted-foreground"}`} />
             </div>
-            <div><p className="font-display text-5xl leading-none text-foreground">{value}</p><p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-warning">{sub}</p></div>
+            <div><p className="font-display text-5xl leading-none text-foreground">{value}</p><p className="mt-1 font-mono text-[10px] uppercase text-destructive">{sub}</p></div>
           </Button>
         ))}
       </div>
+
+      <div className="mb-6 mt-8 flex flex-wrap items-center justify-between gap-3 border-b-2 border-border pb-4"><div><p className="font-mono text-[10px] uppercase text-destructive">Workstation / {String(stats.findIndex((item) => item.key === tab) + 1).padStart(2, "0")}</p><h2 className="mt-1 font-display text-2xl uppercase sm:text-3xl">{stats.find((item) => item.key === tab)?.label}</h2></div><span className="font-mono text-[10px] uppercase text-muted-foreground">Session active <span className="text-destructive">●</span></span></div>
 
       {tab === "guests" ? (
         <GuestsAdmin onCount={setGuestCount} />
@@ -261,21 +280,21 @@ function AdminPage() {
               </label>
             </div>
             <div className="flex gap-2 pt-2">
-              <button
+               <Button
                 type="submit"
                 disabled={busy}
-                className="hairline bg-card/60 px-4 py-3 font-mono text-[11px] tracking-[0.3em] uppercase hover:border-rust disabled:opacity-50"
+                 variant="outline" className="h-auto rounded-none bg-card/60 px-4 py-3 font-mono text-[11px] uppercase hover:border-destructive disabled:opacity-50"
               >
                 {busy ? "Saving…" : "Publish"}
-              </button>
+               </Button>
               {draft.id ? (
-                <button
+                 <Button
                   type="button"
                   onClick={() => setDraft({ ...emptyBulletin })}
-                  className="hairline bg-card/40 px-4 py-3 font-mono text-[11px] tracking-[0.3em] text-muted-foreground uppercase"
+                   variant="outline" className="h-auto rounded-none bg-card/40 px-4 py-3 font-mono text-[11px] text-muted-foreground uppercase"
                 >
                   Cancel
-                </button>
+                 </Button>
               ) : null}
             </div>
           </form>
@@ -291,7 +310,7 @@ function AdminPage() {
                 <h4 className="font-display text-base tracking-[0.18em] uppercase">{b.title}</h4>
                 <p className="text-sm leading-relaxed text-muted-foreground">{b.body}</p>
                 <div className="flex gap-2 pt-1">
-                  <button
+                   <Button variant="outline" size="sm"
                     onClick={() =>
                       setDraft({
                         id: b.id,
@@ -304,25 +323,25 @@ function AdminPage() {
                         published: b.published,
                       })
                     }
-                    className="hairline bg-card/50 px-3 py-2 font-mono text-[10px] tracking-[0.25em] uppercase hover:border-rust"
+                     className="rounded-none bg-card/50 font-mono text-[10px] uppercase hover:border-destructive"
                   >
                     Edit
-                  </button>
-                  <button
+                   </Button>
+                   <Button variant="outline" size="sm"
                     onClick={async () => {
                       await removeBulletin({ data: { id: b.id } });
                       await refresh();
                     }}
-                    className="hairline bg-card/50 px-3 py-2 font-mono text-[10px] tracking-[0.25em] text-destructive uppercase hover:border-destructive"
+                     className="rounded-none bg-card/50 font-mono text-[10px] text-destructive uppercase hover:border-destructive"
                   >
                     Delete
-                  </button>
+                   </Button>
                 </div>
               </article>
             ))}
           </div>
         </div>
       )}
-    </PageShell>
+    </section></div>
   );
 }
