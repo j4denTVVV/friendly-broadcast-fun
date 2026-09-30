@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, Flag, Inbox, Lock, Megaphone, ShieldAlert, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoAsset from "@/assets/ps-logo.png";
-import { PageShell } from "@/components/prison/PageShell";
+
 import { SystemTicker } from "@/components/prison/SystemTicker";
 import { GuestsAdmin } from "@/components/prison/GuestsAdmin";
 import { ApplicationsAdmin } from "@/components/prison/ApplicationsAdmin";
