@@ -9,6 +9,7 @@ import { SystemTicker } from "@/components/prison/SystemTicker";
 import { GuestsAdmin } from "@/components/prison/GuestsAdmin";
 import { ApplicationsAdmin } from "@/components/prison/ApplicationsAdmin";
 import { BannerAdmin } from "@/components/prison/BannerAdmin";
+import { AdminAmbience, AdminIntro } from "@/components/prison/AdminAtmosphere";
 import {
   adminLogin,
   adminLogout,
@@ -118,6 +119,8 @@ function AdminPage() {
   if (!unlocked) {
     return (
       <main className="admin-theme admin-entry relative min-h-screen px-4 pb-16 pt-32 sm:px-8 lg:pt-40">
+        <AdminIntro />
+        <AdminAmbience />
         <div className="admin-terminal mx-auto max-w-6xl">
           <div className="admin-terminal-stripe h-1.5" />
           <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-border bg-background px-5 py-4 sm:px-7">
@@ -154,7 +157,7 @@ function AdminPage() {
   ];
 
   return (
-    <div className="admin-theme admin-entry min-h-screen pt-24"><SystemTicker /><section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
+    <div className="admin-theme admin-entry min-h-screen pt-24"><AdminAmbience /><SystemTicker /><section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
       {accessing && <div aria-live="polite" className="admin-access-flash fixed inset-0 z-[60] flex items-center justify-center bg-background font-display text-5xl uppercase text-destructive">Access granted</div>}
       <div className="admin-terminal-stripe h-1.5" />
       <div className="flex flex-wrap items-center justify-between gap-4 border-x border-b-2 border-border bg-background px-5 py-4 sm:px-7">
