@@ -136,20 +136,7 @@ function AdminPage() {
               <div className="mt-10 flex justify-between border-t border-border pt-4 font-mono text-[9px] uppercase text-muted-foreground"><span>Encrypted channel</span><span>Internal use only</span></div>
             </form>
             <div className="bg-background/45 p-6 sm:p-10">
-              <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="font-mono text-[10px] uppercase text-destructive">System ready / authorization pending</p><h2 className="mt-3 font-display text-3xl uppercase sm:text-4xl">Command console</h2></div><span className="border-l border-border pl-4 font-mono text-[10px] uppercase text-muted-foreground">04 / Sections</span></div>
-              <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                {[
-                  { label: "Guest files", Icon: Users, detail: "Roster management" },
-                  { label: "Bulletins", Icon: Megaphone, detail: "Public dispatches" },
-                  { label: "Entry requests", Icon: Inbox, detail: "Decision queue" },
-                  { label: "Site banner", Icon: Flag, detail: "Transmission sequence" },
-                ].map(({ label, Icon, detail }, index) => (
-                  <div key={label} className="admin-tool-preview border border-border bg-card/60 p-5">
-                    <div className="flex justify-between"><Icon className="size-5 text-destructive" /><span className="font-mono text-[10px] text-muted-foreground">0{index + 1}</span></div>
-                    <h3 className="mt-8 font-display text-lg uppercase">{label}</h3><p className="mt-1 text-xs text-muted-foreground">{detail}</p>
-                  </div>
-                ))}
-              </div>
+              <p className="font-mono text-[10px] uppercase text-destructive">System locked / authorization pending</p>
               <div className="mt-5 border border-border bg-background px-4 py-4 font-mono text-[10px] uppercase text-muted-foreground"><span className="text-destructive">&gt;</span> Awaiting staff clearance<span className="admin-cursor">_</span></div>
             </div>
           </div>
