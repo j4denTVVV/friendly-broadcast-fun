@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 type Row = { id: string; title: string; body: string | null; tone: string; link: string | null; created_at: string };
 
 const toneLabel: Record<string, string> = { info: "Facility notice", alert: "Alarm triggered", success: "Clearance granted" };
-const toneColor: Record<string, string> = { info: "text-signal", alert: "text-destructive", success: "text-success" };
+const toneColor: Record<string, string> = { info: "text-signal", alert: "text-destructive", success: "text-ok" };
 
 /** Pops up notifications sent from the control room, live, for every visitor on the site. */
 export function LiveNotifications() {
@@ -23,7 +23,7 @@ export function LiveNotifications() {
                 <span className="mt-1 size-2 shrink-0 animate-pulse-dot rounded-full bg-signal" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2 font-mono text-[10px] tracking-[0.25em] uppercase">
-                    <span className={toneColor[n.tone] ?? "text-signal"}>{toneLabel[n.tone] ?? toneLabel.info}</span>
+                    <span className={toneColor[n.tone] ?? "text-signal"}>{toneLabel[n.tone] ?? "Facility notice"}</span>
                     <span className="text-muted-foreground">{time}</span>
                   </div>
                   <p className="mt-2 font-display text-xl leading-tight uppercase text-foreground">{n.title}</p>
