@@ -35,7 +35,7 @@ function AboutPage() {
           <div className="space-y-4 text-sm leading-relaxed text-muted-foreground">
             <p>
               Prison Stream is a newly announced creator project launching{" "}
-              <span className="text-foreground">19 October 2026</span>. The full concept, format
+              <span className="text-foreground">Autumn 2026</span> — exact date classified. The full concept, format
               and complete lineup remain under wraps. Only a handful of files have been opened so
               far — everyone else remains classified, waiting to be discovered by name.
             </p>

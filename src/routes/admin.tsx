@@ -1,13 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowRight, Flag, Inbox, Lock, Megaphone, ShieldAlert, Users } from "lucide-react";
+import { ArrowRight, Bell, Flag, Inbox, Lock, Megaphone, ShieldAlert, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoAsset from "@/assets/ps-logo.png";
 
 import { SystemTicker } from "@/components/prison/SystemTicker";
 import { GuestsAdmin } from "@/components/prison/GuestsAdmin";
 import { ApplicationsAdmin } from "@/components/prison/ApplicationsAdmin";
+import { NotificationsAdmin } from "@/components/prison/NotificationsAdmin";
 import { BannerAdmin } from "@/components/prison/BannerAdmin";
 import { AdminIntro } from "@/components/prison/AdminAtmosphere";
 import {
@@ -66,7 +67,7 @@ function AdminPage() {
   const [unlocked, setUnlocked] = useState<boolean | null>(null);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [tab, setTab] = useState<"board" | "guests" | "apps" | "banner">("guests");
+  const [tab, setTab] = useState<"board" | "guests" | "apps" | "banner" | "alerts">("guests");
   const [appCount, setAppCount] = useState(0);
   const [bulletins, setBulletins] = useState<BulletinRow[]>([]);
   const [draft, setDraft] = useState<BulletinDraft>({ ...emptyBulletin });
@@ -153,6 +154,7 @@ function AdminPage() {
     { key: "board" as const, label: "Bulletins", value: bulletins.length, sub: `${bulletins.filter((b) => b.published).length} live`, Icon: Megaphone },
     { key: "apps" as const, label: "Entry requests", value: appCount, sub: "accept or reject", Icon: Inbox },
     { key: "banner" as const, label: "Site banner", value: "▲", sub: "top-of-site notice", Icon: Flag },
+    { key: "alerts" as const, label: "Live alerts", value: "●", sub: "pop-up notifications", Icon: Bell },
   ];
 
   return (
@@ -175,7 +177,7 @@ function AdminPage() {
         </Button>
       </div>
 
-      <div className="grid border-2 border-border bg-background sm:grid-cols-2 lg:grid-cols-4" role="tablist" aria-label="Control room sections">
+      <div className="grid border-2 border-border bg-background sm:grid-cols-2 lg:grid-cols-5" role="tablist" aria-label="Control room sections">
         {stats.map(({ key, label, value, sub, Icon }, i) => (
           <Button variant="ghost"
             key={key}
@@ -202,6 +204,8 @@ function AdminPage() {
         <GuestsAdmin onCount={setGuestCount} />
       ) : tab === "apps" ? (
         <ApplicationsAdmin onCount={setAppCount} />
+      ) : tab === "alerts" ? (
+        <NotificationsAdmin />
       ) : tab === "banner" ? (
         <BannerAdmin />
       ) : (

@@ -24,19 +24,19 @@ export const terms = {
 
 /** ---------------------------------------------------------------------
  * LAUNCH
- * When the exact date is announced: set `exactDateAnnounced: true` and
+ * When the exact date is announced: set `exactDateAnnounced: false` and
  * fill `targetIso`. The Lockdown section swaps the placeholder for a real
  * countdown automatically. Do NOT guess a date.
  * ------------------------------------------------------------------- */
 export const launch = {
-  window: "19 OCTOBER",
+  window: "AUTUMN",
   year: "2026",
-  exactDateAnnounced: true,
+  exactDateAnnounced: false,
   /** Confirmed launch: 19 October 2026, 20:00 UK */
   targetIso: "2026-10-19T19:00:00Z" as string | null,
-  dateLabel: "19 OCTOBER 2026",
-  timeLabel: "20:00 UK",
-  status: "CONFIRMED — GATES OPEN SOON",
+  dateLabel: "[CLASSIFIED]",
+  timeLabel: "[CLASSIFIED]",
+  status: "DATE CLASSIFIED",
 } as const;
 
 /** Atmospheric readouts. Visual only — never fake statistics. */
@@ -45,15 +45,15 @@ export const systemReadout = [
   { label: "TRANSMISSIONS", value: "STANDBY", tone: "warn" as const },
   { label: "ROSTER", value: "CLASSIFIED", tone: "muted" as const },
   { label: "NEXT REVEAL", value: "UNKNOWN", tone: "muted" as const },
-  { label: "LAUNCH", value: "19 OCTOBER 2026", tone: "ok" as const },
+  { label: "LAUNCH", value: "AUTUMN 2026", tone: "ok" as const },
   { label: "SECURITY LEVEL", value: "[CLASSIFIED]", tone: "muted" as const },
 ];
 
 export const projectFile = [
   { label: "PROJECT", value: "PRISON STREAM" },
   { label: "STATUS", value: "ACTIVE" },
-  { label: "LAUNCH", value: "19 OCTOBER 2026" },
-  { label: "DATE", value: "19 OCTOBER 2026" },
+  { label: "LAUNCH", value: "AUTUMN 2026" },
+  { label: "DATE", value: "CLASSIFIED" },
   { label: "PARTICIPANTS", value: "CLASSIFIED" },
   { label: "LOCATION", value: "CLASSIFIED" },
   { label: "FORMAT", value: "CLASSIFIED" },
