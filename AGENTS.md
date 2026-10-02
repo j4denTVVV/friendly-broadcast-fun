@@ -12,4 +12,5 @@
 - Keep the shared-password admin session as the sole gate for privileged server functions; the control-room effects are presentation only, not access control.
 - Store ordered banner messages and their animations in `site_banner.messages` while retaining `message` and `link` as first-item compatibility fields; existing readers and data stay intact.
 - Build public roster slots and creator channels through the same per-visitor unsealing filter, so sealed identities do not appear in visible pages before search.
-- Keep the control room on the public Prison Stream tokens and typography (Big Shoulders Stencil Display / Barlow Condensed / JetBrains Mono); admin-only font and palette overrides are not allowed.
+
+- The control room uses the shared public tokens, with the shared `--signal` accent as its highlight colour; why: one theme source, no admin-only palette.
