@@ -340,3 +340,42 @@ export const saveBanner = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });
+
+export type NotificationRow = { id: string; title: string; body: string | null; tone: string; link: string | null; created_at: string };
+
+export const listNotifications = createServerFn({ method: "POST" }).handler(async () => {
+  await requireAdmin();
+  const db = await admin();
+  const { data, error } = await db.from("site_notifications").select("*").order("created_at", { ascending: false }).limit(30);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as NotificationRow[];
+});
+
+export const sendNotification = createServerFn({ method: "POST" })
+  .inputValidator((data: { title: string; body?: string; tone?: string; link?: string }) => {
+    const title = String(data.title ?? "").trim().slice(0, 120);
+    if (!title) throw new Error("Add a title");
+    return {
+      title,
+      body: data.body?.trim().slice(0, 400) || null,
+      tone: ["info", "alert", "success"].includes(data.tone ?? "") ? data.tone! : "info",
+      link: data.link?.trim().startsWith("/") || data.link?.trim().startsWith("http") ? data.link.trim().slice(0, 500) : null,
+    };
+  })
+  .handler(async ({ data }) => {
+    await requireAdmin();
+    const db = await admin();
+    const { error } = await db.from("site_notifications").insert(data);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+export const deleteNotification = createServerFn({ method: "POST" })
+  .inputValidator((data: { id: string }) => data)
+  .handler(async ({ data }) => {
+    await requireAdmin();
+    const db = await admin();
+    const { error } = await db.from("site_notifications").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });

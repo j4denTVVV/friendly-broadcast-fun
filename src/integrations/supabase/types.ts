@@ -194,6 +194,33 @@ export type Database = {
         }
         Relationships: []
       }
+      site_notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          title: string
+          tone: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          title: string
+          tone?: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          title?: string
+          tone?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

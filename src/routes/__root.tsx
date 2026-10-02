@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "sonner";
 import { Atmosphere } from "@/components/prison/Atmosphere";
 import { SiteHeader } from "@/components/prison/SiteHeader";
+import { LiveNotifications } from "@/components/prison/LiveNotifications";
 import { SiteFooter } from "@/components/prison/SiteFooter";
 
 function NotFoundComponent() {
@@ -139,6 +140,7 @@ function RootComponent() {
       </main>
       <SiteFooter />
       <Toaster theme="dark" position="bottom-right" />
+      <LiveNotifications />
     </QueryClientProvider>
   );
 }
