@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 type Row = { id: string; title: string; body: string | null; tone: string; link: string | null; created_at: string };
 
 const toneLabel: Record<string, string> = { info: "Facility notice", alert: "Alarm triggered", success: "Clearance granted" };
-const toneColor: Record<string, string> = { info: "text-signal", alert: "text-destructive", success: "text-ok" };
+const toneColor: Record<string, string> = { info: "text-signal", alert: "text-destructive", success: "text-foreground" };
 
 /** Pops up notifications sent from the control room, live, for every visitor on the site. */
 export function LiveNotifications() {
