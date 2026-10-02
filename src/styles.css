@@ -38,6 +38,7 @@
   --color-rust-deep: var(--rust-deep);
   --color-warning: var(--warning);
   --color-signal: var(--signal);
+  --color-signal: var(--signal);
   --color-concrete: var(--concrete);
   --color-steel: var(--steel);
   --font-display: "Big Shoulders Stencil Display", "Oswald", "Arial Narrow", sans-serif;
@@ -70,6 +71,7 @@
   --rust: oklch(0.55 0.13 44);
   --rust-deep: oklch(0.38 0.1 40);
   --warning: oklch(0.76 0.15 78);
+  --signal: oklch(0.72 0.19 50);
   --signal: oklch(0.58 0.21 25);
   --concrete: oklch(0.32 0.004 70);
   --steel: oklch(0.42 0.006 240);
@@ -496,3 +498,11 @@
 @keyframes admin-slice { 0% { clip-path: inset(10% 0 55% 0); } 33% { clip-path: inset(40% 0 30% 0); } 66% { clip-path: inset(70% 0 2% 0); } }
 @keyframes admin-intro-out { to { opacity: 0; visibility: hidden; } }
 @media (prefers-reduced-motion: reduce) { .admin-intro-title, .admin-intro-title::before, .admin-intro-title::after, .admin-intro-scan { animation: none; } }
+
+/* Live notification pop-up */
+.ps-alert { position: relative; overflow: hidden; width: 360px; max-width: calc(100vw - 2rem); border: 1px solid color-mix(in oklab, var(--signal) 60%, transparent); background: var(--background); box-shadow: 0 0 32px -8px color-mix(in oklab, var(--signal) 55%, transparent); clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px)); animation: ps-alert-in .45s cubic-bezier(.2,.9,.2,1); }
+.ps-alert::before { content: ""; position: absolute; inset: 0 0 auto; height: 4px; background: repeating-linear-gradient(-45deg, var(--signal) 0 8px, transparent 8px 16px); }
+.ps-alert-bar { position: absolute; left: 0; bottom: 0; height: 2px; background: var(--signal); animation: ps-alert-bar 9s linear forwards; }
+@keyframes ps-alert-in { 0% { transform: translateX(110%) skewX(-8deg); opacity: 0; } 60% { transform: translateX(-4%) skewX(2deg); opacity: 1; } 100% { transform: none; } }
+@keyframes ps-alert-bar { from { width: 100%; } to { width: 0; } }
+@media (prefers-reduced-motion: reduce) { .ps-alert, .ps-alert-bar { animation: none; } }

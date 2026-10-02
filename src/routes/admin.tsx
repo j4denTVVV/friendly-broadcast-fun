@@ -113,7 +113,7 @@ function AdminPage() {
 
   if (unlocked === null) {
     return (
-      <div className="admin-entry flex min-h-screen items-center justify-center pt-24"><p className="label-mono animate-flicker text-destructive">Verifying clearance…</p></div>
+      <div className="admin-entry flex min-h-screen items-center justify-center pt-24"><p className="label-mono animate-flicker text-signal">Verifying clearance…</p></div>
     );
   }
 
@@ -124,23 +124,23 @@ function AdminPage() {
         <div className="admin-terminal mx-auto max-w-6xl">
           <div className="admin-terminal-stripe h-1.5" />
           <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-border bg-background px-5 py-4 sm:px-7">
-            <div className="flex items-center gap-3"><span className="admin-led size-2 rounded-full bg-destructive" /><img src={logoAsset} alt="" className="h-7 w-7 object-contain" /><span className="font-mono text-[10px] font-bold uppercase text-foreground sm:text-xs">Prison Stream // Control Room</span></div>
-            <span className="font-mono text-[10px] uppercase text-destructive">● Restricted access</span>
+            <div className="flex items-center gap-3"><span className="admin-led size-2 rounded-full bg-signal" /><img src={logoAsset} alt="" className="h-7 w-7 object-contain" /><span className="font-mono text-[10px] font-bold uppercase text-foreground sm:text-xs">Prison Stream // Control Room</span></div>
+            <span className="font-mono text-[10px] uppercase text-signal">● Restricted access</span>
           </div>
           <div className="grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
             <form onSubmit={onLogin} className="admin-access relative flex flex-col justify-center border-b-2 border-border p-6 sm:p-10 lg:border-b-0 lg:border-r-2" aria-label="Staff access">
-              <div className="flex items-center gap-3 font-mono text-[10px] uppercase text-destructive"><ShieldAlert className="size-4" /> Restricted zone / 01</div>
-              <h1 className="admin-glitch-title mt-6 font-display text-4xl uppercase leading-none sm:text-5xl">Clearance<br />verification<span className="text-destructive">.</span></h1>
+              <div className="flex items-center gap-3 font-mono text-[10px] uppercase text-signal"><ShieldAlert className="size-4" /> Restricted zone / 01</div>
+              <h1 className="admin-glitch-title mt-6 font-display text-4xl uppercase leading-none sm:text-5xl">Clearance<br />verification<span className="text-signal">.</span></h1>
               <p className="mt-5 max-w-sm text-sm text-muted-foreground">This area is not part of the public transmission.</p>
               <label htmlFor="staff-passcode" className="mt-12 block font-mono text-[10px] uppercase text-muted-foreground">Staff passcode</label>
-              <input id="staff-passcode" required type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" className="mt-3 h-14 w-full rounded-none border-2 border-border bg-background px-4 font-mono text-base text-foreground outline-none transition-colors focus:border-destructive" placeholder="••••••••••••" />
-              {error && <p role="alert" className="mt-3 font-mono text-xs uppercase text-destructive">{error}</p>}
+              <input id="staff-passcode" required type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" className="mt-3 h-14 w-full rounded-none border-2 border-border bg-background px-4 font-mono text-base text-foreground outline-none transition-colors focus:border-signal" placeholder="••••••••••••" />
+              {error && <p role="alert" className="mt-3 font-mono text-xs uppercase text-signal">{error}</p>}
               <Button type="submit" disabled={busy} className="admin-command-button mt-5 flex h-14 w-full justify-between rounded-none bg-foreground px-5 font-mono text-xs uppercase text-background hover:bg-foreground/85">{busy ? "Verifying…" : "Request clearance"}<ArrowRight className="size-4" /></Button>
               <div className="mt-10 flex justify-between border-t border-border pt-4 font-mono text-[9px] uppercase text-muted-foreground"><span>Encrypted channel</span><span>Internal use only</span></div>
             </form>
             <div className="bg-background/45 p-6 sm:p-10">
-              <p className="font-mono text-[10px] uppercase text-destructive">System locked / authorization pending</p>
-              <div className="mt-5 border border-border bg-background px-4 py-4 font-mono text-[10px] uppercase text-muted-foreground"><span className="text-destructive">&gt;</span> Awaiting staff clearance<span className="admin-cursor">_</span></div>
+              <p className="font-mono text-[10px] uppercase text-signal">System locked / authorization pending</p>
+              <div className="mt-5 border border-border bg-background px-4 py-4 font-mono text-[10px] uppercase text-muted-foreground"><span className="text-signal">&gt;</span> Awaiting staff clearance<span className="admin-cursor">_</span></div>
             </div>
           </div>
           <div className="flex flex-wrap justify-between gap-2 border-t-2 border-border bg-background px-5 py-3 font-mono text-[9px] uppercase text-muted-foreground sm:px-7"><span>Prison Stream / Internal network</span><span>Unauthorised entry prohibited</span></div>
@@ -159,19 +159,19 @@ function AdminPage() {
 
   return (
     <div className="admin-entry min-h-screen pt-24"><SystemTicker /><section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
-      {accessing && <div aria-live="polite" className="admin-access-flash fixed inset-0 z-[60] flex items-center justify-center bg-background font-display text-5xl uppercase text-destructive">Access granted</div>}
+      {accessing && <div aria-live="polite" className="admin-access-flash fixed inset-0 z-[60] flex items-center justify-center bg-background font-display text-5xl uppercase text-signal">Access granted</div>}
       <div className="admin-terminal-stripe h-1.5" />
       <div className="flex flex-wrap items-center justify-between gap-4 border-x border-b-2 border-border bg-background px-5 py-4 sm:px-7">
-        <div className="flex items-center gap-3"><span className="admin-led size-2 rounded-full bg-destructive" /><img src={logoAsset} alt="" className="size-7 object-contain" /><span className="font-mono text-[10px] uppercase text-foreground">Prison Stream // Site admin</span></div><span className="font-mono text-[10px] uppercase text-destructive">Secure line / Active</span>
+        <div className="flex items-center gap-3"><span className="admin-led size-2 rounded-full bg-signal" /><img src={logoAsset} alt="" className="size-7 object-contain" /><span className="font-mono text-[10px] uppercase text-foreground">Prison Stream // Site admin</span></div><span className="font-mono text-[10px] uppercase text-signal">Secure line / Active</span>
       </div>
       <div className="flex flex-wrap items-end justify-between gap-6 border-x border-border bg-card/60 px-5 py-8 sm:px-7 sm:py-10">
-        <div><p className="font-mono text-[10px] uppercase text-destructive">Internal network / Clearance granted</p><h1 className="mt-3 font-display text-4xl uppercase leading-none sm:text-6xl">Control room<span className="text-destructive">.</span></h1><p className="mt-3 text-sm text-muted-foreground">Changes go live instantly.</p></div>
+        <div><p className="font-mono text-[10px] uppercase text-signal">Internal network / Clearance granted</p><h1 className="mt-3 font-display text-4xl uppercase leading-none sm:text-6xl">Control room<span className="text-signal">.</span></h1><p className="mt-3 text-sm text-muted-foreground">Changes go live instantly.</p></div>
         <Button variant="outline" size="sm"
           onClick={async () => {
             await logout({});
             setUnlocked(false);
           }}
-          className="rounded-none border-border bg-background font-mono text-[11px] uppercase text-foreground hover:border-destructive hover:text-destructive"
+          className="rounded-none border-border bg-background font-mono text-[11px] uppercase text-foreground hover:border-signal hover:text-signal"
         >
           <Lock className="h-3.5 w-3.5" /> Lock
         </Button>
@@ -184,21 +184,21 @@ function AdminPage() {
             role="tab"
             aria-selected={tab === key}
             onClick={() => setTab(key)}
-            className={`admin-section relative h-auto min-h-36 flex-col items-start justify-between rounded-none border-b border-border p-5 text-left transition-colors hover:bg-destructive/5 sm:border-b-0 ${i > 0 ? "lg:border-l" : ""} ${
-              tab === key ? "bg-destructive/10" : "bg-card/30"
+            className={`admin-section relative h-auto min-h-36 flex-col items-start justify-between rounded-none border-b border-border p-5 text-left transition-colors hover:bg-signal/5 sm:border-b-0 ${i > 0 ? "lg:border-l" : ""} ${
+              tab === key ? "bg-signal/10" : "bg-card/30"
             }`}
           >
-            {tab === key && <span className="absolute inset-x-0 top-0 h-0.5 bg-destructive" />}
+            {tab === key && <span className="absolute inset-x-0 top-0 h-0.5 bg-signal" />}
             <div className="flex w-full items-center justify-between">
               <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">0{i + 1} / {label}</span>
-              <Icon className={`h-4 w-4 ${tab === key ? "text-destructive" : "text-muted-foreground"}`} />
+              <Icon className={`h-4 w-4 ${tab === key ? "text-signal" : "text-muted-foreground"}`} />
             </div>
-            <div><p className="font-display text-5xl leading-none text-foreground">{value}</p><p className="mt-1 font-mono text-[10px] uppercase text-destructive">{sub}</p></div>
+            <div><p className="font-display text-5xl leading-none text-foreground">{value}</p><p className="mt-1 font-mono text-[10px] uppercase text-signal">{sub}</p></div>
           </Button>
         ))}
       </div>
 
-      <div className="mb-6 mt-8 flex flex-wrap items-center justify-between gap-3 border-b-2 border-border pb-4"><div><p className="font-mono text-[10px] uppercase text-destructive">Workstation / {String(stats.findIndex((item) => item.key === tab) + 1).padStart(2, "0")}</p><h2 className="mt-1 font-display text-2xl uppercase sm:text-3xl">{stats.find((item) => item.key === tab)?.label}</h2></div><span className="font-mono text-[10px] uppercase text-muted-foreground">Session active <span className="text-destructive">●</span></span></div>
+      <div className="mb-6 mt-8 flex flex-wrap items-center justify-between gap-3 border-b-2 border-border pb-4"><div><p className="font-mono text-[10px] uppercase text-signal">Workstation / {String(stats.findIndex((item) => item.key === tab) + 1).padStart(2, "0")}</p><h2 className="mt-1 font-display text-2xl uppercase sm:text-3xl">{stats.find((item) => item.key === tab)?.label}</h2></div><span className="font-mono text-[10px] uppercase text-muted-foreground">Session active <span className="text-signal">●</span></span></div>
 
       {tab === "guests" ? (
         <GuestsAdmin onCount={setGuestCount} />
@@ -276,7 +276,7 @@ function AdminPage() {
                <Button
                 type="submit"
                 disabled={busy}
-                 variant="outline" className="h-auto rounded-none bg-card/60 px-4 py-3 font-mono text-[11px] uppercase hover:border-destructive disabled:opacity-50"
+                 variant="outline" className="h-auto rounded-none bg-card/60 px-4 py-3 font-mono text-[11px] uppercase hover:border-signal disabled:opacity-50"
               >
                 {busy ? "Saving…" : "Publish"}
                </Button>
@@ -316,7 +316,7 @@ function AdminPage() {
                         published: b.published,
                       })
                     }
-                     className="rounded-none bg-card/50 font-mono text-[10px] uppercase hover:border-destructive"
+                     className="rounded-none bg-card/50 font-mono text-[10px] uppercase hover:border-signal"
                   >
                     Edit
                    </Button>
@@ -325,7 +325,7 @@ function AdminPage() {
                       await removeBulletin({ data: { id: b.id } });
                       await refresh();
                     }}
-                     className="rounded-none bg-card/50 font-mono text-[10px] text-destructive uppercase hover:border-destructive"
+                     className="rounded-none bg-card/50 font-mono text-[10px] text-signal uppercase hover:border-signal"
                   >
                     Delete
                    </Button>

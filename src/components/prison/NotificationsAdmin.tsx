@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { deleteNotification, listNotifications, sendNotification, type NotificationRow } from "@/lib/admin.functions";
 
-const field = "w-full border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-destructive";
+const field = "w-full border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-signal";
 
 export function NotificationsAdmin() {
   const list = useServerFn(listNotifications);
@@ -36,7 +36,7 @@ export function NotificationsAdmin() {
           }
         }}
       >
-        <p className="label-mono text-destructive">Broadcast live alert</p>
+        <p className="label-mono text-signal">Broadcast live alert</p>
         <p className="text-xs text-muted-foreground">Pops up instantly for every visitor currently on the site.</p>
         <input className={field} placeholder="Title (e.g. NEW FILE UNSEALED)" value={form.title} maxLength={120} onChange={(e) => setForm({ ...form, title: e.target.value })} />
         <textarea className={field} rows={3} placeholder="Message (optional)" value={form.body} maxLength={400} onChange={(e) => setForm({ ...form, body: e.target.value })} />
