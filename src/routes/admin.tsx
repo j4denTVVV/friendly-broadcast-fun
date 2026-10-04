@@ -130,7 +130,7 @@ function AdminPage() {
           <div className="grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
             <form onSubmit={onLogin} className="admin-access relative flex flex-col justify-center border-b-2 border-border p-6 sm:p-10 lg:border-b-0 lg:border-r-2" aria-label="Staff access">
               <div className="flex items-center gap-3 font-mono text-[10px] uppercase text-signal"><ShieldAlert className="size-4" /> Restricted zone / 01</div>
-              <h1 className="admin-glitch-title mt-6 font-display text-4xl uppercase leading-none sm:text-5xl">Clearance<br />verification<span className="text-signal">.</span></h1>
+               <h1 className="admin-glitch-title mt-6 font-gateway text-5xl font-black uppercase leading-none sm:text-7xl">Clearance<br />verification<span className="text-signal">.</span></h1>
               <p className="mt-5 max-w-sm text-sm text-muted-foreground">This area is not part of the public transmission.</p>
               <label htmlFor="staff-passcode" className="mt-12 block font-mono text-[10px] uppercase text-muted-foreground">Staff passcode</label>
               <input id="staff-passcode" required type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" className="mt-3 h-14 w-full rounded-none border-2 border-border bg-background px-4 font-mono text-base text-foreground outline-none transition-colors focus:border-signal" placeholder="••••••••••••" />
@@ -165,7 +165,7 @@ function AdminPage() {
         <div className="flex items-center gap-3"><span className="admin-led size-2 rounded-full bg-signal" /><img src={logoAsset} alt="" className="size-7 object-contain" /><span className="font-mono text-[10px] uppercase text-foreground">Prison Stream // Site admin</span></div><span className="font-mono text-[10px] uppercase text-signal">Secure line / Active</span>
       </div>
       <div className="flex flex-wrap items-end justify-between gap-6 border-x border-border bg-card/60 px-5 py-8 sm:px-7 sm:py-10">
-        <div><p className="font-mono text-[10px] uppercase text-signal">Internal network / Clearance granted</p><h1 className="mt-3 font-display text-4xl uppercase leading-none sm:text-6xl">Control room<span className="text-signal">.</span></h1><p className="mt-3 text-sm text-muted-foreground">Changes go live instantly.</p></div>
+         <div><p className="font-mono text-[10px] uppercase text-signal">Internal network / Clearance granted</p><h1 className="mt-3 font-gateway text-5xl font-black uppercase leading-none sm:text-7xl">Control room<span className="text-signal">.</span></h1><p className="mt-3 text-sm text-muted-foreground">Changes go live instantly.</p></div>
         <Button variant="outline" size="sm"
           onClick={async () => {
             await logout({});
