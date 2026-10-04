@@ -65,7 +65,7 @@ function Index() {
             <div className="grid md:min-h-[560px] md:grid-cols-[minmax(0,1.35fr)_minmax(310px,0.65fr)]">
               <div className="flex min-w-0 flex-col justify-end border-b border-border p-6 py-12 sm:p-12 md:border-r md:border-b-0 lg:p-16">
                 <div className="mb-6 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] text-rust"><StatusDot tone="live" /> Unauthorized access detected</div>
-                <h1 className="animate-rise font-sans text-[clamp(5.4rem,13vw,12rem)] font-black uppercase leading-[0.78] text-foreground" style={{ fontFamily: '"Barlow Condensed", sans-serif' }}>
+                <h1 className="animate-rise font-gateway text-[clamp(5.4rem,13vw,12rem)] font-black uppercase leading-[0.78] text-foreground">
                   Prison<br /><span className="text-rust">Stream</span>
                 </h1>
                 <p className="mt-8 font-sans text-xl font-semibold uppercase text-foreground sm:text-2xl">The gates are opening.</p>
@@ -73,7 +73,7 @@ function Index() {
               </div>
               <div className="flex min-w-0 flex-col justify-center bg-card/70 p-6 py-10 sm:p-10">
                 <span className="mb-8 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-rust"><StatusDot tone="live" /> Facility entrance / 01</span>
-                <h2 className="border-b border-rust pb-3 font-sans text-3xl font-black uppercase leading-none sm:text-4xl" style={{ fontFamily: '"Barlow Condensed", sans-serif' }}>Access the facility</h2>
+                <h2 className="border-b border-rust pb-3 font-gateway text-3xl font-black uppercase leading-none sm:text-4xl">Access the facility</h2>
                 <div className="my-8 space-y-3 border border-border bg-background/80 p-5 font-mono text-[11px] uppercase tracking-[0.12em]">
                   <div className="flex justify-between gap-3"><span className="text-muted-foreground">Launch window</span><span>{launch.window} {launch.year}</span></div>
                   <div className="flex justify-between gap-3"><span className="text-muted-foreground">Exact date</span><span className="text-rust">Classified</span></div>

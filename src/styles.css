@@ -41,6 +41,7 @@
   --color-concrete: var(--concrete);
   --color-steel: var(--steel);
   --font-display: "Big Shoulders Stencil Display", "Oswald", "Arial Narrow", sans-serif;
+  --font-gateway: "Barlow Condensed", "Oswald", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --font-sans: "Barlow Condensed", "Barlow", system-ui, sans-serif;
 }
