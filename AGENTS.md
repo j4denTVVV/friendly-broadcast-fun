@@ -14,3 +14,4 @@
 - Build public roster slots and creator channels through the same per-visitor unsealing filter, so sealed identities do not appear in visible pages before search.
 
 - The control room uses the shared public tokens, with the shared `--signal` accent as its highlight colour; why: one theme source, no admin-only palette.
+- Route top-navigation clicks through the shared gate transition before client navigation; why: the visual transition remains consistent across pages without changing access controls.
