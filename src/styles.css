@@ -451,6 +451,11 @@
 @media (max-width: 640px) { .site-banner-bars { display: none; } }
 
 /* Restricted terminal and transmission effects */
+.gate-close-left { animation: gate-close-left .7s cubic-bezier(.7,0,.2,1) both; }
+.gate-close-right { animation: gate-close-right .7s cubic-bezier(.7,0,.2,1) both; }
+@keyframes gate-close-left { from { transform: translateX(-101%); } to { transform: translateX(0); } }
+@keyframes gate-close-right { from { transform: translateX(101%); } to { transform: translateX(0); } }
+@media (prefers-reduced-motion: reduce) { .gate-close-left, .gate-close-right { animation: none; } }
 .admin-entry {
   background:
     linear-gradient(90deg, color-mix(in oklab, var(--background) 97%, transparent), color-mix(in oklab, var(--card) 90%, transparent)),

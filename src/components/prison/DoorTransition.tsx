@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import rust from "@/assets/texture-rust.jpg";
 
 type Phase = "idle" | "closing" | "scanning" | "opening";
@@ -48,10 +49,10 @@ export function DoorTransition({
   const doorTransformRight =
     phase === "closing" || phase === "scanning" ? "translateX(0)" : "translateX(101%)";
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100]" aria-hidden>
       <div
-        className="absolute inset-y-0 left-0 w-1/2 border-r border-rust-deep/60 bg-background transition-transform duration-[1100ms] ease-[cubic-bezier(0.7,0,0.2,1)]"
+        className={`absolute inset-y-0 left-0 w-1/2 border-r border-rust-deep/60 bg-background transition-transform duration-[1100ms] ease-[cubic-bezier(0.7,0,0.2,1)] ${phase === "closing" ? "gate-close-left" : ""}`}
         style={{
           transform: doorTransform,
           backgroundImage: `linear-gradient(90deg, rgba(0,0,0,0.75), rgba(0,0,0,0.35)), url(${rust})`,
@@ -59,7 +60,7 @@ export function DoorTransition({
         }}
       />
       <div
-        className="absolute inset-y-0 right-0 w-1/2 border-l border-rust-deep/60 bg-background transition-transform duration-[1100ms] ease-[cubic-bezier(0.7,0,0.2,1)]"
+        className={`absolute inset-y-0 right-0 w-1/2 border-l border-rust-deep/60 bg-background transition-transform duration-[1100ms] ease-[cubic-bezier(0.7,0,0.2,1)] ${phase === "closing" ? "gate-close-right" : ""}`}
         style={{
           transform: doorTransformRight,
           backgroundImage: `linear-gradient(270deg, rgba(0,0,0,0.75), rgba(0,0,0,0.35)), url(${rust})`,
@@ -78,6 +79,6 @@ export function DoorTransition({
           </div>
         </div>
       ) : null}
-    </div>
+    </div>, document.body
   );
 }
