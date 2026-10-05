@@ -1,7 +1,6 @@
-import { Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
 import { Menu, X } from "lucide-react";
-import { useNavigate } from "@tanstack/react-router";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { DoorTransition } from "./DoorTransition";
 import { SoundToggle } from "./SoundToggle";
@@ -27,6 +26,7 @@ export function SiteHeader() {
   const destination = useRef<(typeof navLinks)[number]["to"] | null>(null);
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => () => {
     if (resetTimer.current) clearTimeout(resetTimer.current);
@@ -58,7 +58,7 @@ export function SiteHeader() {
       <SiteBanner />
       <div className="hazard-strip h-[3px] w-full opacity-30" />
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        <Link to="/" onClick={(event) => startGate(event, "/")} className="group flex items-center gap-3">
+        <a href="/" onClick={(event) => startGate(event, "/")} className="group flex items-center gap-3">
           <img
             src={logoAsset}
             alt="Prison Stream emblem"
@@ -67,21 +67,20 @@ export function SiteHeader() {
           <span className="font-display text-sm tracking-[0.35em] text-foreground uppercase">
             Prison Stream
           </span>
-        </Link>
+        </a>
 
 
         <nav className="hidden items-center gap-1 lg:flex">
           {navLinks.map((l) => (
-            <Link
+            <a
               key={l.to}
-              to={l.to}
+              href={l.to}
               onClick={(event) => startGate(event, l.to)}
-              activeProps={{ className: "text-foreground border-rust" }}
-              activeOptions={{ exact: l.to === "/" }}
-              className="border-b border-transparent px-3 py-2 font-mono text-[11px] tracking-[0.18em] text-muted-foreground uppercase transition-colors hover:text-foreground"
+              aria-current={location.pathname === l.to || (l.to === "/roster" && location.pathname.startsWith("/roster/")) ? "page" : undefined}
+              className={`border-b px-3 py-2 font-mono text-[11px] tracking-[0.18em] uppercase transition-colors hover:text-foreground ${location.pathname === l.to ? "border-rust text-foreground" : "border-transparent text-muted-foreground"}`}
             >
               {l.label}
-            </Link>
+            </a>
           ))}
         </nav>
 
@@ -103,14 +102,14 @@ export function SiteHeader() {
       {open ? (
         <nav className="grid grid-cols-2 gap-px border-t border-border bg-border lg:hidden">
           {navLinks.map((l) => (
-            <Link
+            <a
               key={l.to}
-              to={l.to}
+              href={l.to}
               onClick={(event) => startGate(event, l.to)}
               className="bg-background px-4 py-4 font-mono text-[11px] tracking-[0.2em] text-muted-foreground uppercase active:bg-card"
             >
               {l.label}
-            </Link>
+            </a>
           ))}
         </nav>
       ) : null}
