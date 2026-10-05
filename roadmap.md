@@ -1,5 +1,7 @@
 # Prison Stream — roadmap
 
+- [ ] Run the gate-opening effect when visitors use the top navigation
+- [ ] Intensify the control-room glitch effects without changing its theme or access gate
 - [x] Show every real file as a sealed roster slot and hide unrevealed creator socials until search
 - [x] Upgrade the restricted control room styling and access screen
 - [x] Add rotating banner messages with selectable animations

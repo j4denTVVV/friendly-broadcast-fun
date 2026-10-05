@@ -464,6 +464,11 @@
 .admin-access::after { right: -1px; bottom: -1px; border-right: 1px solid; border-bottom: 1px solid; }
 .admin-warning-band { background: repeating-linear-gradient(135deg, color-mix(in oklab, var(--warning) 6%, transparent) 0 9px, transparent 9px 18px); }
 .admin-glitch-title { position: relative; text-shadow: 0 0 55px color-mix(in oklab, var(--warning) 14%, transparent); animation: terminal-flicker 8s steps(1, end) infinite; }
+.admin-glitch-line { position: relative; display: inline-block; }
+.admin-glitch-line::before, .admin-glitch-line::after { content: attr(data-text); position: absolute; inset: 0; pointer-events: none; opacity: 0; }
+.admin-glitch-line::before { color: var(--signal); clip-path: inset(8% 0 65% 0); animation: admin-text-break 4.1s steps(1) infinite; }
+.admin-glitch-line::after { color: var(--foreground); clip-path: inset(64% 0 10% 0); animation: admin-text-break 3.3s steps(1) infinite reverse; }
+@keyframes admin-text-break { 0%, 83%, 89%, 100% { opacity: 0; transform: none; } 84% { opacity: .9; transform: translateX(-5px); } 86% { opacity: .7; transform: translateX(4px); } 88% { opacity: 0; } }
 .admin-section:hover { box-shadow: inset 0 0 35px color-mix(in oklab, var(--warning) 7%, transparent); }
 .admin-access-flash { animation: clearance-flash .9s ease-out both; pointer-events: none; }
 @keyframes terminal-flicker { 0%, 92%, 96%, 100% { text-shadow: 0 0 55px color-mix(in oklab, var(--warning) 14%, transparent); transform: none; } 93% { text-shadow: 3px 0 var(--warning), -3px 0 var(--rust); transform: translateX(2px); } 94% { text-shadow: -2px 0 var(--warning); transform: translateX(-2px); } }
@@ -490,13 +495,15 @@
 @media (prefers-reduced-motion: reduce) { .admin-glitch-title, .admin-led, .admin-cursor { animation: none; } }
 .admin-intro { animation: admin-intro-out .5s ease-in 2.1s forwards; overflow: hidden; }
 .admin-intro-scan { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, color-mix(in oklab, var(--foreground) 6%, transparent) 0 1px, transparent 1px 3px); animation: flicker .15s steps(2) infinite; }
+.admin-intro-interference { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(90deg, transparent 0 20%, color-mix(in oklab, var(--signal) 9%, transparent) 20% 20.2%, transparent 20.2% 45%); animation: admin-interference 1.4s steps(1) infinite; }
+@keyframes admin-interference { 0%, 18%, 23%, 65%, 70%, 100% { opacity: 0; transform: none; } 19%, 66% { opacity: 1; transform: translateX(8px) skewX(-2deg); } 21%, 68% { opacity: .5; transform: translateX(-7px); } }
 .admin-intro-title { position: relative; color: var(--foreground); animation: command-jitter .6s steps(1,end) infinite; }
 .admin-intro-title::before, .admin-intro-title::after { content: attr(data-text); position: absolute; inset: 0; }
 .admin-intro-title::before { color: var(--rust); clip-path: inset(10% 0 55% 0); transform: translateX(-4px); animation: admin-slice 1.1s steps(1) infinite; }
 .admin-intro-title::after { color: var(--muted-foreground); clip-path: inset(60% 0 5% 0); transform: translateX(4px); animation: admin-slice 0.9s steps(1) infinite reverse; }
 @keyframes admin-slice { 0% { clip-path: inset(10% 0 55% 0); } 33% { clip-path: inset(40% 0 30% 0); } 66% { clip-path: inset(70% 0 2% 0); } }
 @keyframes admin-intro-out { to { opacity: 0; visibility: hidden; } }
-@media (prefers-reduced-motion: reduce) { .admin-intro-title, .admin-intro-title::before, .admin-intro-title::after, .admin-intro-scan { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .admin-intro-title, .admin-intro-title::before, .admin-intro-title::after, .admin-intro-scan, .admin-intro-interference, .admin-glitch-line::before, .admin-glitch-line::after { animation: none; } }
 
 /* Live notification pop-up */
 .ps-alert { position: relative; overflow: hidden; width: 360px; max-width: calc(100vw - 2rem); border: 1px solid color-mix(in oklab, var(--signal) 60%, transparent); background: var(--background); box-shadow: 0 0 32px -8px color-mix(in oklab, var(--signal) 55%, transparent); clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px)); animation: ps-alert-in .45s cubic-bezier(.2,.9,.2,1); }
