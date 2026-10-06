@@ -172,7 +172,18 @@ function GuestCard({ entry }: { entry: RosterEntry }) {
 }
 
 const STORAGE_KEY = "ps-unsealed-files";
-const SPIN_KEY = "ps-last-spin";
+const SPIN_KEY = "ps-spins";
+const MAX_SPINS = 3;
+const SPIN_WINDOW_MS = 2 * 60 * 60 * 1000;
+function recentSpins(): number[] {
+  try {
+    const raw = JSON.parse(window.localStorage.getItem(SPIN_KEY) ?? "[]");
+    const cutoff = Date.now() - SPIN_WINDOW_MS;
+    return Array.isArray(raw) ? raw.filter((t): t is number => typeof t === "number" && t > cutoff) : [];
+  } catch {
+    return [];
+  }
+}
 
 function RevealsPage() {
   const [query, setQuery] = useState("");
@@ -197,9 +208,12 @@ function RevealsPage() {
   const [spinLabel, setSpinLabel] = useState("???");
   const [spinning, setSpinning] = useState(false);
   const [spunToday, setSpunToday] = useState(false);
+  const [spinsLeft, setSpinsLeft] = useState(MAX_SPINS);
   useEffect(() => {
     try {
-      setSpunToday(window.localStorage.getItem(SPIN_KEY) === new Date().toDateString());
+      const used = recentSpins().length;
+      setSpinsLeft(MAX_SPINS - used);
+      setSpunToday(used >= MAX_SPINS);
     } catch {
       /* ignore */
     }
@@ -223,7 +237,7 @@ function RevealsPage() {
   const spin = () => {
     if (spinning || spunToday) return;
     const pool = creatorDatabase().filter(
-      (c) => clearanceOf(c) !== "CLASSIFIED" && !guests.includes(c.file),
+      (c) => clearanceOf(c) === "CONFIRMED" && !guests.includes(c.file),
     );
     if (pool.length === 0) {
       setSpinLabel("ALL FILES UNSEALED");
@@ -241,9 +255,11 @@ function RevealsPage() {
           if (delay > 320) {
             setSpinLabel(`FILE ${winner.file}`);
             setSpinning(false);
-            setSpunToday(true);
+            setSpunToday(recentSpins().length + 1 >= MAX_SPINS);
             try {
-              window.localStorage.setItem(SPIN_KEY, new Date().toDateString());
+              const next = [...recentSpins(), Date.now()];
+              window.localStorage.setItem(SPIN_KEY, JSON.stringify(next));
+              setSpinsLeft(MAX_SPINS - next.length);
             } catch {
               /* ignore */
             }
@@ -356,7 +372,7 @@ function RevealsPage() {
           </form>
 
           <div className="mt-8 border border-rust/50 bg-background/70 p-5">
-            <p className="label-mono text-rust">Daily clearance spin</p>
+            <p className="label-mono text-rust">Clearance spin</p>
             <p className="mt-3 font-display text-4xl uppercase tabular-nums sm:text-5xl">{spinLabel}</p>
             <button
               type="button"
@@ -365,9 +381,9 @@ function RevealsPage() {
               className="mt-4 inline-flex h-12 items-center gap-3 border border-rust bg-rust px-6 font-mono text-[11px] tracking-[0.28em] text-background uppercase transition-colors hover:bg-foreground disabled:opacity-50"
             >
               <Dices className="h-4 w-4" />
-              {spinning ? "Spinning..." : spunToday ? "Come back tomorrow" : "Spin to unseal a file"}
+              {spinning ? "Spinning..." : spunToday ? "Come back later" : "Spin to unseal a file"}
             </button>
-            <p className="mt-3 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">One spin per day. Win a random sealed creator.</p>
+            <p className="mt-3 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{spinsLeft} of 3 spins left · resets every 2 hours</p>
           </div>
 
           {phase !== "idle" ? <Terminal lines={SCAN_LINES.slice(0, step)} /> : null}
