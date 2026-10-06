@@ -517,3 +517,21 @@
 @keyframes ps-alert-in { 0% { transform: translateX(110%) skewX(-8deg); opacity: 0; } 60% { transform: translateX(-4%) skewX(2deg); opacity: 1; } 100% { transform: none; } }
 @keyframes ps-alert-bar { from { width: 100%; } to { width: 0; } }
 @media (prefers-reduced-motion: reduce) { .ps-alert, .ps-alert-bar { animation: none; } }
+
+/* Reveal pop + confetti */
+@keyframes confetti-burst {
+  0% { transform: translate(0, 0) rotate(0); opacity: 1; }
+  45% { transform: translate(var(--cx), var(--cy)) rotate(calc(var(--cr) * 0.5)); opacity: 1; }
+  100% { transform: translate(calc(var(--cx) * 1.2), 70vh) rotate(var(--cr)); opacity: 0; }
+}
+.confetti-piece { top: 50%; left: 50%; animation: confetti-burst 2.6s cubic-bezier(0.2, 0.7, 0.4, 1) forwards; }
+@keyframes reveal-pop {
+  0% { transform: scale(0.6); opacity: 0; filter: brightness(2); }
+  60% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); filter: none; }
+}
+.reveal-pop { animation: reveal-pop 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .confetti-piece { display: none; }
+  .reveal-pop { animation: none; }
+}
