@@ -763,10 +763,10 @@ export const liveStreams: Stream[] = [];
  * ------------------------------------------------------------------- */
 export const trailer = {
   released: true,
-  label: "TRANSMISSION 001",
+  label: "CAM-001 TRAILER",
   /** Official trailer — YouTube */
   url: "https://www.youtube.com/watch?v=QrnMwZ_7gSU",
-  runtime: "CLASSIFIED",
+  runtime: "3:25",
 };
 
 /** ---------------------------------------------------------------------

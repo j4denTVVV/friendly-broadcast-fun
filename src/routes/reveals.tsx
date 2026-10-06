@@ -1,7 +1,8 @@
 import { useLiveGuests } from "@/lib/live-guests";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Search, Lock, ShieldCheck, FileWarning } from "lucide-react";
+import { Search, Lock, ShieldCheck, FileWarning, Dices } from "lucide-react";
+import { Confetti } from "@/components/prison/Confetti";
 import { PageShell } from "@/components/prison/PageShell";
 import { clearanceOf, creatorDatabase, searchCreator } from "@/lib/roster";
 import type { RosterEntry } from "@/config/prison";
@@ -85,7 +86,8 @@ function SocialList({ entry }: { entry: RosterEntry }) {
 
 function FileUnseal({ entry }: { entry: RosterEntry }) {
   return (
-    <div className="panel corner-marks grain animate-rise relative mt-8 overflow-hidden">
+    <div className="panel corner-marks grain reveal-pop relative mt-8 overflow-hidden">
+      <Confetti key={entry.file} />
       <div className="hazard-strip h-1.5 w-full opacity-70" />
       <div className="grid gap-6 p-5 sm:grid-cols-[minmax(0,240px)_1fr] sm:p-8">
         <div className="relative aspect-[3/4] overflow-hidden border border-border bg-background">
@@ -170,6 +172,7 @@ function GuestCard({ entry }: { entry: RosterEntry }) {
 }
 
 const STORAGE_KEY = "ps-unsealed-files";
+const SPIN_KEY = "ps-last-spin";
 
 function RevealsPage() {
   const [query, setQuery] = useState("");
@@ -190,6 +193,70 @@ function RevealsPage() {
   }, []);
 
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
+
+  const [spinLabel, setSpinLabel] = useState("???");
+  const [spinning, setSpinning] = useState(false);
+  const [spunToday, setSpunToday] = useState(false);
+  useEffect(() => {
+    try {
+      setSpunToday(window.localStorage.getItem(SPIN_KEY) === new Date().toDateString());
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const unseal = (entry: RosterEntry) => {
+    setResult(entry);
+    setPhase("match");
+    setGuests((prev) => {
+      if (prev.includes(entry.file)) return prev;
+      const next = [...prev, entry.file];
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  };
+
+  const spin = () => {
+    if (spinning || spunToday) return;
+    const pool = creatorDatabase().filter(
+      (c) => clearanceOf(c) !== "CLASSIFIED" && !guests.includes(c.file),
+    );
+    if (pool.length === 0) {
+      setSpinLabel("ALL FILES UNSEALED");
+      return;
+    }
+    const winner = pool[Math.floor(Math.random() * pool.length)]!;
+    setSpinning(true);
+    setPhase("idle");
+    setResult(null);
+    let t = 0;
+    const tick = (delay: number) => {
+      timers.current.push(
+        setTimeout(() => {
+          t += 1;
+          if (delay > 320) {
+            setSpinLabel(`FILE ${winner.file}`);
+            setSpinning(false);
+            setSpunToday(true);
+            try {
+              window.localStorage.setItem(SPIN_KEY, new Date().toDateString());
+            } catch {
+              /* ignore */
+            }
+            unseal(winner);
+            return;
+          }
+          setSpinLabel(`FILE ${String(Math.floor(Math.random() * 40) + 1).padStart(3, "0")}`);
+          tick(delay * 1.12);
+        }, delay),
+      );
+    };
+    tick(40);
+  };
 
   const persist = (files: string[]) => {
     setGuests(files);
@@ -227,18 +294,7 @@ function RevealsPage() {
           setPhase("classified");
           return;
         }
-        setResult(entry);
-        setPhase("match");
-        setGuests((prev) => {
-          if (prev.includes(entry.file)) return prev;
-          const next = [...prev, entry.file];
-          try {
-            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-          } catch {
-            /* ignore */
-          }
-          return next;
-        });
+        unseal(entry);
       }, SCAN_LINES.length * STEP_MS),
     );
   };
@@ -298,6 +354,21 @@ function RevealsPage() {
               {phase === "scanning" ? "Scanning..." : "Search database →"}
             </button>
           </form>
+
+          <div className="mt-8 border border-rust/50 bg-background/70 p-5">
+            <p className="label-mono text-rust">Daily clearance spin</p>
+            <p className="mt-3 font-display text-4xl uppercase tabular-nums sm:text-5xl">{spinLabel}</p>
+            <button
+              type="button"
+              onClick={spin}
+              disabled={spinning || spunToday}
+              className="mt-4 inline-flex h-12 items-center gap-3 border border-rust bg-rust px-6 font-mono text-[11px] tracking-[0.28em] text-background uppercase transition-colors hover:bg-foreground disabled:opacity-50"
+            >
+              <Dices className="h-4 w-4" />
+              {spinning ? "Spinning..." : spunToday ? "Come back tomorrow" : "Spin to unseal a file"}
+            </button>
+            <p className="mt-3 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">One spin per day. Win a random sealed creator.</p>
+          </div>
 
           {phase !== "idle" ? <Terminal lines={SCAN_LINES.slice(0, step)} /> : null}
 
