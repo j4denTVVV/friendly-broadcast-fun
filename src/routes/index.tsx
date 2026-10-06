@@ -49,46 +49,46 @@ function Index() {
       <DoorTransition active={entering} onComplete={onDoorsOpen} />
 
       {/* HERO */}
-      <section className="grain relative flex min-h-[100svh] items-end overflow-hidden border-b border-border">
+      <section className="grain relative flex min-h-[100svh] items-center overflow-hidden border-b border-border">
         <img
           src={heroImg}
           alt="A heavy steel prison door standing ajar in a dark concrete corridor"
           width={1920}
           height={1088}
-          className="absolute inset-0 h-full w-full object-cover opacity-70"
+          className="absolute inset-0 h-full w-full object-cover object-right opacity-60"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-background/60" />
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-32 pb-16 sm:px-6">
-          <div className="mb-5 flex items-center gap-3">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-32 pb-20 sm:px-6">
+          <div className="inline-flex items-center gap-3 border border-border bg-background/60 px-3 py-1.5">
             <StatusDot tone="live" />
-            <span className="label-mono text-rust">Unauthorized access detected</span>
+            <span className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase">Unauthorized access detected</span>
           </div>
-          <h1 className="animate-rise font-display text-[18vw] leading-[0.82] font-black uppercase sm:text-[9rem]">
-            Prison<br />Stream
+          <h1 className="animate-rise mt-5 font-display text-[22vw] leading-[0.8] font-black uppercase sm:text-[10rem]">
+            <span className="block bg-gradient-to-b from-foreground/70 to-foreground bg-clip-text text-transparent">Prison</span>
+            <span className="block text-rust">Stream</span>
           </h1>
-          <p className="mt-6 text-xl uppercase sm:text-2xl">The gates are opening.</p>
-          <p className="mt-2 font-mono text-xs tracking-[0.3em] text-rust uppercase">
-            {launch.window} {launch.year} — Date classified
-          </p>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <Button onClick={() => setEntering(true)} className="h-14 rounded-none bg-rust px-8 font-mono text-xs tracking-[0.24em] uppercase hover:bg-rust/80">
+          <p className="mt-8 font-display text-3xl tracking-[0.2em] sm:text-4xl">The gates are opening.</p>
+          <p className="mt-3 font-mono text-sm tracking-[0.35em] text-warning uppercase">{launch.window} {launch.year}</p>
+          <div className="mt-12 flex flex-wrap gap-3">
+            <Button onClick={() => setEntering(true)} className="h-14 rounded-none border border-rust bg-rust/15 px-8 font-mono text-xs tracking-[0.28em] text-foreground uppercase hover:bg-rust/35">
               Enter the prison <ArrowRight className="size-4" />
             </Button>
-            <Button asChild variant="outline" className="h-14 rounded-none border-border bg-background/50 px-8 font-mono text-xs tracking-[0.24em] uppercase hover:border-rust">
+            <Button asChild variant="outline" className="h-14 rounded-none border-border bg-transparent px-8 font-mono text-xs tracking-[0.28em] text-muted-foreground uppercase hover:border-rust hover:text-foreground">
               <Link to="/trailer"><Play className="size-4" /> Watch the trailer</Link>
             </Button>
           </div>
-          <div className="mt-14 grid grid-cols-2 border border-border bg-background/60 md:grid-cols-4">
+          <div className="mt-14 grid max-w-2xl grid-cols-2 gap-8 sm:grid-cols-4">
             {[
               ["Launch window", `${launch.window} ${launch.year}`],
               ["Exact date", "Classified"],
               ["Roster", "Classified"],
-              ["Format", "Live stream"],
+              ["Format", "Classified"],
             ].map(([k, v]) => (
-              <div key={k} className="border-border p-4 not-last:border-r">
-                <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{k}</p>
-                <p className={`mt-2 font-display text-lg uppercase ${v === "Classified" ? "text-rust" : ""}`}>{v}</p>
+              <div key={k} className="border-t border-border pt-4">
+                <p className="font-mono text-[10px] tracking-[0.25em] text-muted-foreground uppercase">{k}</p>
+                <p className="mt-2 font-mono text-[11px] tracking-[0.2em] uppercase">{v}</p>
               </div>
             ))}
           </div>

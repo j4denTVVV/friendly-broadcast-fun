@@ -8,12 +8,12 @@ import { trailer } from "@/config/prison";
 export const Route = createFileRoute("/trailer")({
   head: () => ({
     meta: [
-      { title: "Transmission 001 — PRISON STREAM" },
+      { title: "CAM-001 Trailer — PRISON STREAM" },
       {
         name: "description",
-        content: "The official Prison Stream trailer. Transmission 001 is live — the first footage from inside the facility.",
+        content: "The official Prison Stream trailer. CAM-001 Trailer is live — the first footage from inside the facility.",
       },
-      { property: "og:title", content: "Transmission 001 — PRISON STREAM" },
+      { property: "og:title", content: "CAM-001 Trailer — PRISON STREAM" },
       { property: "og:description", content: "The first transmission is live." },
     ],
   }),
@@ -52,7 +52,7 @@ function TrailerPage() {
           playing && embedUrl ? (
             <iframe
               src={embedUrl}
-              title="Prison Stream — Transmission 001"
+              title="Prison Stream — CAM-001 Trailer"
               className="h-full w-full border-0"
               allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
