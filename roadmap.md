@@ -15,4 +15,4 @@
 - [x] Simplify creator records by removing username, platform and announced rows
 - [x] Label LBMM as a streamer and keep NoiseByKj's artist detail in the biography only
 - [ ] Replace the Instagram trailer with the full trailer after a hosted video link is supplied
-- [ ] Trailer: label CAM-001 TRAILER, runtime 3:25
+- [x] Trailer: label CAM-001 TRAILER, runtime 3:25
