@@ -23,10 +23,23 @@ function allEntries(): RosterEntry[] {
 /** Visitors only see the identities they have personally unsealed. */
 export const UNSEALED_STORAGE_KEY = "ps-unsealed-files";
 
+/** Presentation-only flag: staff signed into the control room see every file in this browser. */
+const ADMIN_VIEW_KEY = "ps-admin-view";
+export function setAdminView(on: boolean) {
+  if (typeof window === "undefined") return;
+  try {
+    if (on) window.localStorage.setItem(ADMIN_VIEW_KEY, "1");
+    else window.localStorage.removeItem(ADMIN_VIEW_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
 /** File numbers the visitor has personally unsealed through the reveals search. */
 export function readUnsealedFiles(): string[] {
   if (typeof window === "undefined") return [];
   try {
+    if (window.localStorage.getItem(ADMIN_VIEW_KEY) === "1") return allEntries().map((r) => r.file);
     const raw = window.localStorage.getItem(UNSEALED_STORAGE_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
     return Array.isArray(parsed) ? parsed.filter((f): f is string => typeof f === "string") : [];
