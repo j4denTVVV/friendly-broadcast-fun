@@ -10,7 +10,7 @@ import { Reveal } from "@/components/prison/Reveal";
 import { FileCard } from "@/components/prison/FileCard";
 import { Button } from "@/components/ui/button";
 import { ClassifiedPanel, DataRow, SectionHeading, StatusDot } from "@/components/prison/Classified";
-import { getRosterFiles } from "@/lib/roster";
+import { getRosterFiles, readUnsealedFiles } from "@/lib/roster";
 import { bulletins, launch, liveStreams, projectFile, terms, trailer, upcoming } from "@/config/prison";
 
 export const Route = createFileRoute("/")({
@@ -37,7 +37,9 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [entering, setEntering] = useState(false);
   useLiveGuests();
-  const files = getRosterFiles().slice(0, 4);
+  const [unsealed, setUnsealed] = useState<string[]>([]);
+  useEffect(() => setUnsealed(readUnsealedFiles()), []);
+  const files = getRosterFiles(unsealed).slice(0, 4);
 
   const onDoorsOpen = useCallback(() => {
     document.getElementById("facility")?.scrollIntoView({ behavior: "smooth", block: "start" });
