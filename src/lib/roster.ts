@@ -95,3 +95,13 @@ export function searchCreator(query: string): RosterEntry | undefined {
     return keys.some((k) => normalizeName(k) === q);
   });
 }
+
+/** True when this browser has accessed the control room (presentation only). */
+export function isAdminView(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return window.localStorage.getItem("ps-admin-view") === "1";
+  } catch {
+    return false;
+  }
+}

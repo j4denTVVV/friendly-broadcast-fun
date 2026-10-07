@@ -37,6 +37,7 @@
   --color-rust: var(--rust);
   --color-rust-deep: var(--rust-deep);
   --color-warning: var(--warning);
+  --color-success: var(--success);
   --color-signal: var(--signal);
   --color-concrete: var(--concrete);
   --color-steel: var(--steel);
@@ -71,6 +72,7 @@
   --rust: #A45531;
   --rust-deep: oklch(0.38 0.1 40);
   --warning: oklch(0.76 0.15 78);
+  --success: oklch(0.78 0.2 145);
   --signal: #A45531;
   --concrete: oklch(0.32 0.004 70);
   --steel: oklch(0.42 0.006 240);
