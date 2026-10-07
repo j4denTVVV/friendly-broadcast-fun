@@ -11,6 +11,7 @@ import { ApplicationsAdmin } from "@/components/prison/ApplicationsAdmin";
 import { NotificationsAdmin } from "@/components/prison/NotificationsAdmin";
 import { BannerAdmin } from "@/components/prison/BannerAdmin";
 import { AdminIntro } from "@/components/prison/AdminAtmosphere";
+import { setAdminView } from "@/lib/roster";
 import {
   adminLogin,
   adminLogout,
