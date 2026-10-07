@@ -82,11 +82,20 @@ function AdminPage() {
   }, [loadBulletins, loadGuests]);
 
   useEffect(() => {
+    const fallback = window.setTimeout(() => setUnlocked((u) => (u === null ? false : u)), 6000);
     void (async () => {
-      const s = await status({});
-      setUnlocked(s.unlocked);
-      if (s.unlocked) await refresh().catch(() => setUnlocked(false));
+      try {
+        const s = await status({});
+        setUnlocked(s.unlocked);
+        setAdminView(s.unlocked);
+        if (s.unlocked) await refresh().catch(() => setUnlocked(false));
+      } catch {
+        setUnlocked(false);
+      } finally {
+        window.clearTimeout(fallback);
+      }
     })();
+    return () => window.clearTimeout(fallback);
   }, [status, refresh]);
 
   const onLogin = async (e: React.FormEvent) => {
@@ -100,6 +109,7 @@ function AdminPage() {
         return;
       }
       setUnlocked(true);
+      setAdminView(true);
       setPassword("");
       setAccessing(true);
       window.setTimeout(() => setAccessing(false), 900);
