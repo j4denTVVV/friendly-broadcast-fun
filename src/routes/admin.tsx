@@ -11,6 +11,7 @@ import { ApplicationsAdmin } from "@/components/prison/ApplicationsAdmin";
 import { NotificationsAdmin } from "@/components/prison/NotificationsAdmin";
 import { BannerAdmin } from "@/components/prison/BannerAdmin";
 import { AdminIntro } from "@/components/prison/AdminAtmosphere";
+import { setAdminView } from "@/lib/roster";
 import {
   adminLogin,
   adminLogout,
@@ -82,11 +83,20 @@ function AdminPage() {
   }, [loadBulletins, loadGuests]);
 
   useEffect(() => {
+    const fallback = window.setTimeout(() => setUnlocked((u) => (u === null ? false : u)), 6000);
     void (async () => {
-      const s = await status({});
-      setUnlocked(s.unlocked);
-      if (s.unlocked) await refresh().catch(() => setUnlocked(false));
+      try {
+        const s = await status({});
+        setUnlocked(s.unlocked);
+        setAdminView(s.unlocked);
+        if (s.unlocked) await refresh().catch(() => setUnlocked(false));
+      } catch {
+        setUnlocked(false);
+      } finally {
+        window.clearTimeout(fallback);
+      }
     })();
+    return () => window.clearTimeout(fallback);
   }, [status, refresh]);
 
   const onLogin = async (e: React.FormEvent) => {
@@ -100,6 +110,7 @@ function AdminPage() {
         return;
       }
       setUnlocked(true);
+      setAdminView(true);
       setPassword("");
       setAccessing(true);
       window.setTimeout(() => setAccessing(false), 900);
@@ -169,6 +180,7 @@ function AdminPage() {
         <Button variant="outline" size="sm"
           onClick={async () => {
             await logout({});
+            setAdminView(false);
             setUnlocked(false);
           }}
           className="rounded-none border-border bg-background font-mono text-[11px] uppercase text-foreground hover:border-signal hover:text-signal"
