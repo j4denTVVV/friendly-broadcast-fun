@@ -25,10 +25,11 @@ export const UNSEALED_STORAGE_KEY = "ps-unsealed-files";
 
 /** Presentation-only flag: staff signed into the control room see every file in this browser. */
 const ADMIN_VIEW_KEY = "ps-admin-view";
+const ADMIN_VIEW_MS = 3 * 60 * 60 * 1000;
 export function setAdminView(on: boolean) {
   if (typeof window === "undefined") return;
   try {
-    if (on) window.localStorage.setItem(ADMIN_VIEW_KEY, "1");
+    if (on) window.localStorage.setItem(ADMIN_VIEW_KEY, String(Date.now() + ADMIN_VIEW_MS));
     else window.localStorage.removeItem(ADMIN_VIEW_KEY);
   } catch {
     /* ignore */
@@ -39,7 +40,7 @@ export function setAdminView(on: boolean) {
 export function readUnsealedFiles(): string[] {
   if (typeof window === "undefined") return [];
   try {
-    if (window.localStorage.getItem(ADMIN_VIEW_KEY) === "1") return allEntries().map((r) => r.file);
+    if (isAdminView()) return allEntries().map((r) => r.file);
     const raw = window.localStorage.getItem(UNSEALED_STORAGE_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
     return Array.isArray(parsed) ? parsed.filter((f): f is string => typeof f === "string") : [];
@@ -51,11 +52,11 @@ export function readUnsealedFiles(): string[] {
 /** Every real file gets a slot; only public or personally unsealed files show details. */
 export function getRosterFiles(unsealed: string[] = []): RosterEntry[] {
   return allEntries()
-    .filter((r) => r.revealed)
+    .filter((r) => r.revealed || isAdminView())
     .sort((a, b) => a.file.localeCompare(b.file, undefined, { numeric: true }))
     .map((entry) =>
       clearanceOf(entry) === "REVEALED" || unsealed.includes(entry.file)
-        ? entry
+        ? { ...entry, revealed: true }
         : { file: entry.file, revealed: false, ...(entry.role ? { role: entry.role } : {}) },
     );
 }
@@ -66,7 +67,7 @@ export function findFile(fileId: string, unsealed: string[] = []): RosterEntry {
 
   const isPublic = clearanceOf(entry) === "REVEALED";
   const isPersonallyUnsealed = unsealed.includes(entry.file);
-  return isPublic || isPersonallyUnsealed ? entry : { file: entry.file, revealed: false };
+  return isPublic || isPersonallyUnsealed ? { ...entry, revealed: true } : { file: entry.file, revealed: false };
 }
 
 /** Normalise a name for search: case-insensitive, ignores spaces/symbols. */
@@ -100,7 +101,10 @@ export function searchCreator(query: string): RosterEntry | undefined {
 export function isAdminView(): boolean {
   if (typeof window === "undefined") return false;
   try {
-    return window.localStorage.getItem("ps-admin-view") === "1";
+    const until = Number(window.localStorage.getItem(ADMIN_VIEW_KEY));
+    if (until > Date.now()) return true;
+    window.localStorage.removeItem(ADMIN_VIEW_KEY);
+    return false;
   } catch {
     return false;
   }
