@@ -1,6 +1,6 @@
 import { useLiveGuests } from "@/lib/live-guests";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, Play } from "lucide-react";
 import heroImg from "@/assets/hero-corridor.jpg";
 import { DoorTransition } from "@/components/prison/DoorTransition";

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import rust from "@/assets/texture-rust.jpg";
+import { isAdminView } from "@/lib/roster";
 
 type Phase = "idle" | "closing" | "scanning" | "opening";
 
@@ -21,6 +22,8 @@ export function DoorTransition({
 }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [step, setStep] = useState(0);
+  const [admin, setAdmin] = useState(false);
+  useEffect(() => setAdmin(isAdminView()), [active]);
 
   useEffect(() => {
     if (!active) {
@@ -71,11 +74,14 @@ export function DoorTransition({
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="panel corner-marks w-[min(92vw,26rem)] p-6">
             <div className="mb-4 h-px w-full animate-sweep bg-gradient-to-r from-transparent via-rust to-transparent" />
-            {lines.slice(0, step).map((l) => (
-              <p key={l} className="font-mono text-[11px] tracking-[0.18em] text-warning">
-                {l}
+            {lines.slice(0, step).map((l) => {
+              const isLevel = l.includes("CLEARANCE LEVEL");
+              return (
+              <p key={l} className={`font-mono text-[11px] tracking-[0.18em] ${isLevel && admin ? "text-success" : "text-warning"}`}>
+                {isLevel && admin ? "> CLEARANCE LEVEL: ADMIN" : l}
               </p>
-            ))}
+              );
+            })}
           </div>
         </div>
       ) : null}
