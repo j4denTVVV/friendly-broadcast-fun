@@ -180,6 +180,7 @@ function AdminPage() {
         <Button variant="outline" size="sm"
           onClick={async () => {
             await logout({});
+            setAdminView(false);
             setUnlocked(false);
           }}
           className="rounded-none border-border bg-background font-mono text-[11px] uppercase text-foreground hover:border-signal hover:text-signal"
