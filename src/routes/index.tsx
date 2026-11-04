@@ -52,13 +52,15 @@ function Index() {
 
       {/* HERO */}
       <section className="grain relative flex min-h-[100svh] items-center overflow-hidden border-b border-border">
-        <img
-          src={heroImg}
-          alt="A heavy steel prison door standing ajar in a dark concrete corridor"
-          width={1920}
-          height={1088}
-          className="cine-kenburns absolute inset-0 h-full w-full object-cover object-right opacity-60"
-        />
+        <div className="ps-hero-shudder absolute inset-0">
+          <img
+            src={heroImg}
+            alt="A heavy steel prison door standing ajar in a dark concrete corridor"
+            width={1920}
+            height={1088}
+            className="cine-kenburns absolute inset-0 h-full w-full object-cover object-right opacity-60"
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-background/60" />
 
@@ -150,7 +152,9 @@ function Index() {
         <div className="cine-stagger grid grid-cols-2 gap-4 lg:grid-cols-4">
           {files.map((f, i) => (
             <Reveal key={f.file} delay={i * 90}>
-              <FileCard entry={f} index={i} />
+              <div className="ps-jostle" style={{ animationDelay: `${i * 480}ms` }}>
+                <FileCard entry={f} index={i} />
+              </div>
             </Reveal>
           ))}
         </div>
