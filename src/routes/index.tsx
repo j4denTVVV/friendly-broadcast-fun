@@ -81,7 +81,7 @@ function Index() {
               <Link to="/trailer"><Play className="size-4" /> Watch the trailer</Link>
             </Button>
           </div>
-          <div className="mt-14 grid max-w-2xl grid-cols-2 gap-8 sm:grid-cols-4">
+          <div className="cine-stagger mt-14 grid max-w-2xl grid-cols-2 gap-8 sm:grid-cols-4">
             {[
               ["Launch window", `${launch.window} ${launch.year}`],
               ["Exact date", "Classified"],
@@ -147,7 +147,7 @@ function Index() {
              subtitle="Every file is on the roster. Most identities stay sealed until you guess their names in the clearance database."
           />
         </Reveal>
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="cine-stagger grid grid-cols-2 gap-4 lg:grid-cols-4">
           {files.map((f, i) => (
             <Reveal key={f.file} delay={i * 90}>
               <FileCard entry={f} index={i} />
