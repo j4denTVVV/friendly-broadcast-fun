@@ -57,7 +57,7 @@ function Index() {
           alt="A heavy steel prison door standing ajar in a dark concrete corridor"
           width={1920}
           height={1088}
-          className="absolute inset-0 h-full w-full object-cover object-right opacity-60"
+          className="cine-kenburns absolute inset-0 h-full w-full object-cover object-right opacity-60"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-background/60" />
