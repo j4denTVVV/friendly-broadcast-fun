@@ -5,6 +5,7 @@ import { PageShell } from "@/components/prison/PageShell";
 import { FileCard } from "@/components/prison/FileCard";
 import { Reveal } from "@/components/prison/Reveal";
 import { ClassifiedPanel, DataRow } from "@/components/prison/Classified";
+import { BreakoutDoor } from "@/components/prison/BreakoutDoor";
 import { getRosterFiles, readUnsealedFiles } from "@/lib/roster";
 import { terms } from "@/config/prison";
 
@@ -56,6 +57,8 @@ function RosterPage() {
       title="Who's inside?"
       subtitle="Every file has a place here. Most identities are sealed — guess a name in the clearance database to unseal its file."
     >
+      <BreakoutDoor className="mb-10" />
+
       <div className="mb-10 max-w-md">
         <ClassifiedPanel title="Clearance summary">
           <DataRow label="Roster status" value="CLASSIFIED" tone="muted" />
@@ -91,7 +94,9 @@ function RosterPage() {
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
               {section.entries.map((f, i) => (
                 <Reveal key={f.file} delay={(i % 4) * 80}>
-                  <FileCard entry={f} index={i} />
+                  <div className="ps-jostle" style={{ animationDelay: `${(i % 4) * 420}ms` }}>
+                    <FileCard entry={f} index={i} />
+                  </div>
                 </Reveal>
               ))}
             </div>
