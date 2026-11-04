@@ -559,3 +559,152 @@ html { scroll-behavior: smooth; }
 .sr { opacity: 0; transform: translateY(40px) scale(.98); filter: blur(8px); transition: opacity 1s cubic-bezier(0.22,1,0.36,1) var(--sr-delay,0ms), transform 1s cubic-bezier(0.22,1,0.36,1) var(--sr-delay,0ms), filter 1s ease var(--sr-delay,0ms); }
 .sr.sr-in { opacity: 1; transform: none; filter: none; }
 @media (prefers-reduced-motion: reduce) { .cine-kenburns { animation: none; } .sr { opacity: 1; transform: none; filter: none; } }
+
+/* ============ Containment breach: something inside is forcing the door ============ */
+.ps-door { position: relative; overflow: hidden; border: 2px solid var(--border); background: var(--card); }
+.ps-door-steel {
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--steel) 42%, transparent), transparent 34%),
+    repeating-linear-gradient(90deg, color-mix(in oklab, var(--foreground) 4%, transparent) 0 2px, transparent 2px 26px),
+    var(--card);
+}
+.ps-door-slab { animation: door-rattle 6.4s steps(1, end) infinite; will-change: transform; }
+@keyframes door-rattle {
+  0%, 11% { transform: translate3d(0, 0, 0) rotate(0); }
+  12% { transform: translate3d(-5px, 3px, 0) rotate(-0.5deg); }
+  13% { transform: translate3d(7px, -4px, 0) rotate(0.6deg); }
+  14% { transform: translate3d(-8px, 4px, 0) rotate(-0.7deg); }
+  15% { transform: translate3d(5px, -2px, 0) rotate(0.4deg); }
+  16% { transform: translate3d(-3px, 1px, 0) rotate(-0.2deg); }
+  17%, 43% { transform: none; }
+  44% { transform: translate3d(9px, -3px, 0) rotate(0.8deg); }
+  45% { transform: translate3d(-11px, 5px, 0) rotate(-0.95deg); }
+  46% { transform: translate3d(8px, -4px, 0) rotate(0.7deg); }
+  47% { transform: translate3d(-5px, 2px, 0) rotate(-0.4deg); }
+  48%, 78% { transform: none; }
+  79% { transform: translate3d(-4px, -2px, 0) rotate(-0.42deg); }
+  80% { transform: translate3d(6px, 3px, 0) rotate(0.5deg); }
+  81% { transform: translate3d(-2px, -1px, 0) rotate(-0.2deg); }
+  82%, 100% { transform: none; }
+}
+.ps-door-flash {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background: radial-gradient(circle at 50% 56%, color-mix(in oklab, var(--rust) 55%, transparent), transparent 62%);
+  animation: door-flash 6.4s steps(1, end) infinite;
+}
+@keyframes door-flash {
+  0%, 11% { opacity: 0; }
+  12% { opacity: 0.8; } 13% { opacity: 0.3; } 14% { opacity: 0.65; } 15%, 43% { opacity: 0; }
+  44% { opacity: 0.9; } 45% { opacity: 0.35; } 46% { opacity: 0.8; } 47%, 78% { opacity: 0; }
+  79% { opacity: 0.45; } 80% { opacity: 0.6; } 81%, 100% { opacity: 0; }
+}
+.ps-door-bulge {
+  position: absolute; left: 50%; top: 54%; width: 52%; height: 52%; pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.6); border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in oklab, var(--foreground) 14%, transparent), transparent 70%);
+  animation: door-bulge 6.4s steps(1, end) infinite;
+}
+@keyframes door-bulge {
+  0%, 11% { transform: translate(-50%, -50%) scale(0.6); opacity: 0; }
+  12% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+  13% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.5; }
+  14% { transform: translate(-50%, -50%) scale(1.12); opacity: 0.9; }
+  15%, 43% { transform: translate(-50%, -50%) scale(0.6); opacity: 0; }
+  44% { transform: translate(-50%, -50%) scale(1.18); opacity: 1; }
+  45% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.55; }
+  46% { transform: translate(-50%, -50%) scale(1.24); opacity: 0.95; }
+  47%, 78% { transform: translate(-50%, -50%) scale(0.6); opacity: 0; }
+  79% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.7; }
+  80% { transform: translate(-50%, -50%) scale(1.06); opacity: 0.85; }
+  81%, 100% { transform: translate(-50%, -50%) scale(0.6); opacity: 0; }
+}
+.ps-door-figure {
+  position: absolute; inset: 0; pointer-events: none;
+  transform-origin: 50% 100%;
+  animation: figure-press 6.4s steps(1, end) infinite;
+}
+@keyframes figure-press {
+  0%, 11% { transform: translate3d(-7%, 7%, 0) scale(0.88); opacity: 0.5; }
+  12% { transform: translate3d(0, -2%, 0) scale(1.06); opacity: 0.95; }
+  13% { transform: translate3d(-4%, 4%, 0) scale(0.94); opacity: 0.7; }
+  14% { transform: translate3d(2%, -3%, 0) scale(1.1); opacity: 1; }
+  15%, 43% { transform: translate3d(6%, 8%, 0) scale(0.86); opacity: 0.45; }
+  44% { transform: translate3d(0, -4%, 0) scale(1.12); opacity: 1; }
+  45% { transform: translate3d(5%, 5%, 0) scale(0.92); opacity: 0.65; }
+  46% { transform: translate3d(-2%, -2%, 0) scale(1.04); opacity: 0.9; }
+  47%, 78% { transform: translate3d(-5%, 6%, 0) scale(0.9); opacity: 0.5; }
+  79% { transform: translate3d(3%, 0, 0) scale(1); opacity: 0.8; }
+  80% { transform: translate3d(-1%, -3%, 0) scale(1.07); opacity: 0.95; }
+  81%, 100% { transform: translate3d(-7%, 7%, 0) scale(0.88); opacity: 0.5; }
+}
+.ps-door-scratch { animation: scratch-flare 6.4s steps(1, end) infinite; }
+@keyframes scratch-flare {
+  0%, 11% { opacity: 0.22; } 12% { opacity: 0.95; } 14% { opacity: 0.8; } 15%, 43% { opacity: 0.22; }
+  44% { opacity: 1; } 46% { opacity: 0.85; } 47%, 78% { opacity: 0.22; }
+  79% { opacity: 0.7; } 81%, 100% { opacity: 0.22; }
+}
+.ps-door-bolt { animation: bolt-rattle 6.4s steps(1, end) infinite; }
+@keyframes bolt-rattle {
+  0%, 11% { transform: translate3d(0, 0, 0); } 12% { transform: translate3d(-3px, 2px, 0); }
+  13% { transform: translate3d(3px, -2px, 0); } 14% { transform: translate3d(-2px, 1px, 0); }
+  15%, 43% { transform: none; } 44% { transform: translate3d(4px, -2px, 0); }
+  45% { transform: translate3d(-5px, 3px, 0); } 46% { transform: translate3d(3px, -1px, 0); }
+  47%, 78% { transform: none; } 79% { transform: translate3d(-2px, -1px, 0); }
+  80% { transform: translate3d(2px, 1px, 0); } 81%, 100% { transform: none; }
+}
+.ps-door-hazard {
+  background: repeating-linear-gradient(45deg, color-mix(in oklab, var(--rust) 85%, transparent) 0 12px, color-mix(in oklab, var(--background) 85%, transparent) 12px 24px);
+  background-size: 34px 34px;
+  animation: hazard-scroll 1.4s linear infinite;
+}
+@keyframes hazard-scroll { from { background-position: 0 0; } to { background-position: 34px 0; } }
+.ps-door-alarm { animation: door-alarm 6.4s steps(1, end) infinite; }
+@keyframes door-alarm {
+  0%, 11% { box-shadow: inset 0 0 0 0 transparent; }
+  12% { box-shadow: inset 0 0 60px -10px color-mix(in oklab, var(--rust) 60%, transparent); }
+  15%, 43% { box-shadow: inset 0 0 0 0 transparent; }
+  44% { box-shadow: inset 0 0 90px -10px color-mix(in oklab, var(--rust) 75%, transparent); }
+  47%, 78% { box-shadow: inset 0 0 0 0 transparent; }
+  79% { box-shadow: inset 0 0 40px -10px color-mix(in oklab, var(--rust) 45%, transparent); }
+  81%, 100% { box-shadow: inset 0 0 0 0 transparent; }
+}
+/* Hover / press: the block goes into a frenzy */
+.ps-door[data-fury="true"] .ps-door-slab,
+.ps-door[data-fury="true"] .ps-door-flash,
+.ps-door[data-fury="true"] .ps-door-bulge,
+.ps-door[data-fury="true"] .ps-door-figure,
+.ps-door[data-fury="true"] .ps-door-scratch,
+.ps-door[data-fury="true"] .ps-door-bolt,
+.ps-door[data-fury="true"] .ps-door-alarm { animation-duration: 1.6s; }
+.ps-door[data-fury="true"] { border-color: color-mix(in oklab, var(--rust) 70%, var(--border)); }
+
+/* Files shoving toward the gate */
+@keyframes card-jostle {
+  0%, 26% { transform: none; }
+  27% { transform: translate3d(0, -4px, 0) rotate(-0.6deg) scale(1.012); }
+  28% { transform: translate3d(0, 3px, 0) rotate(0.5deg); }
+  29%, 60% { transform: none; }
+  61% { transform: translate3d(3px, -2px, 0) rotate(0.5deg) scale(1.02); }
+  62% { transform: translate3d(-3px, 2px, 0) rotate(-0.45deg); }
+  63%, 100% { transform: none; }
+}
+.ps-jostle { animation: card-jostle 6.4s steps(1, end) infinite; will-change: transform; }
+
+/* Front-page gate shudders the same way */
+@keyframes hero-shudder {
+  0%, 54% { transform: none; }
+  55% { transform: translate3d(-6px, 2px, 0) scale(1.006); }
+  56% { transform: translate3d(9px, -4px, 0) scale(1.01); }
+  57% { transform: translate3d(-5px, 2px, 0) scale(1.005); }
+  58%, 100% { transform: none; }
+}
+.ps-hero-shudder { animation: hero-shudder 7.6s steps(1, end) infinite; will-change: transform; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-door-slab, .ps-door-flash, .ps-door-bulge, .ps-door-figure,
+  .ps-door-scratch, .ps-door-bolt, .ps-door-hazard, .ps-door-alarm,
+  .ps-jostle, .ps-hero-shudder { animation: none !important; }
+  .ps-door-flash, .ps-door-bulge { opacity: 0 !important; }
+  .ps-door-figure { transform: none !important; opacity: 0.7 !important; }
+  .ps-door-scratch { opacity: 0.5 !important; }
+}
