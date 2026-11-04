@@ -554,3 +554,8 @@ a.panel:hover, .group.panel:hover { transform: translateY(-4px); box-shadow: 0 2
 html { scroll-behavior: smooth; }
 ::selection { background: color-mix(in oklab, var(--rust) 60%, transparent); color: var(--foreground); }
 @media (prefers-reduced-motion: reduce) { .cine-rise, .cine-line, .cine-stagger > *, .cine-halo { animation: none !important; } .panel:hover { transform: none !important; } html { scroll-behavior: auto; } }
+@keyframes cine-kenburns { from { transform: scale(1.12) translate3d(1.5%, 0, 0); } to { transform: scale(1) translate3d(0,0,0); } }
+.cine-kenburns { animation: cine-kenburns 14s cubic-bezier(0.22,1,0.36,1) both; will-change: transform; }
+.sr { opacity: 0; transform: translateY(40px) scale(.98); filter: blur(8px); transition: opacity 1s cubic-bezier(0.22,1,0.36,1) var(--sr-delay,0ms), transform 1s cubic-bezier(0.22,1,0.36,1) var(--sr-delay,0ms), filter 1s ease var(--sr-delay,0ms); }
+.sr.sr-in { opacity: 1; transform: none; filter: none; }
+@media (prefers-reduced-motion: reduce) { .cine-kenburns { animation: none; } .sr { opacity: 1; transform: none; filter: none; } }

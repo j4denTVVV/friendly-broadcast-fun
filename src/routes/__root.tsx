@@ -1,3 +1,4 @@
+import { ScrollReveal } from "@/components/prison/ScrollReveal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -141,6 +142,7 @@ function RootComponent() {
       <SiteFooter />
       <Toaster theme="dark" position="bottom-right" />
       <LiveNotifications />
+      <ScrollReveal />
     </QueryClientProvider>
   );
 }
