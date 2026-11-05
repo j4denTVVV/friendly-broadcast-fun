@@ -15,3 +15,4 @@
 
 - The control room uses the shared public tokens, with the shared `--signal` accent as its highlight colour; why: one theme source, no admin-only palette.
 - Route top-navigation clicks through the shared gate transition before client navigation; why: the visual transition remains consistent across pages without changing access controls.
+- Keep server-only imports (session cookies, node:crypto) in `*.server.ts` modules loaded via dynamic import inside server-function handlers; why: static imports in `*.functions.ts` break the client bundle.
