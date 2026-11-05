@@ -1,28 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
-import { useSession } from "@tanstack/react-start/server";
-import { createHash, timingSafeEqual } from "node:crypto";
-
-type AdminSession = { unlocked?: boolean };
-
-function sessionConfig() {
-  return {
-    password: process.env["SESSION_SECRET"]!,
-    name: "ps-admin",
-    maxAge: 60 * 60 * 12,
-    cookie: { httpOnly: true, secure: true, sameSite: "none" as const, path: "/" },
-  };
+async function session() {
+  const { getAdminSession } = await import("./admin-session.server");
+  return getAdminSession();
 }
 
-function matches(input: string, expected: string) {
-  const a = createHash("sha256").update(input, "utf8").digest();
-  const b = createHash("sha256").update(expected, "utf8").digest();
-  return timingSafeEqual(a, b);
+async function matches(input: string, expected: string) {
+  const { passwordMatches } = await import("./admin-session.server");
+  return passwordMatches(input, expected);
 }
 
 async function requireAdmin() {
-  const session = await useSession<AdminSession>(sessionConfig());
-  if (!session.data.unlocked) throw new Error("LOCKED");
-  return session;
+  const s = await session();
+  if (!s.data.unlocked) throw new Error("LOCKED");
+  return s;
 }
 
 async function admin() {
@@ -35,21 +25,21 @@ export const adminLogin = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const expected = process.env["ADMIN_PASSWORD"];
     if (!expected) throw new Error("ADMIN_PASSWORD is not configured");
-    if (!matches(data.password, expected)) return { ok: false as const };
-    const session = await useSession<AdminSession>(sessionConfig());
-    await session.update({ unlocked: true });
+    if (!(await matches(data.password, expected))) return { ok: false as const };
+    const s = await session();
+    await s.update({ unlocked: true });
     return { ok: true as const };
   });
 
 export const adminLogout = createServerFn({ method: "POST" }).handler(async () => {
-  const session = await useSession<AdminSession>(sessionConfig());
-  await session.clear();
+  const s = await session();
+  await s.clear();
   return { ok: true as const };
 });
 
 export const adminStatus = createServerFn({ method: "POST" }).handler(async () => {
-  const session = await useSession<AdminSession>(sessionConfig());
-  return { unlocked: session.data.unlocked === true };
+  const s = await session();
+  return { unlocked: s.data.unlocked === true };
 });
 
 export type ApplicationRow = {
