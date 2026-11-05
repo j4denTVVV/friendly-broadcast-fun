@@ -50,12 +50,12 @@ export function readUnsealedFiles(): string[] {
 }
 
 /** Every real file gets a slot; only public or personally unsealed files show details. */
-export function getRosterFiles(unsealed: string[] = []): RosterEntry[] {
+export function getRosterFiles(unsealed: string[] = [], admin: boolean = isAdminView()): RosterEntry[] {
   return allEntries()
-    .filter((r) => r.revealed || isAdminView())
+    .filter((r) => r.revealed || admin)
     .sort((a, b) => a.file.localeCompare(b.file, undefined, { numeric: true }))
     .map((entry) =>
-      clearanceOf(entry) === "REVEALED" || unsealed.includes(entry.file) || isAdminView()
+      clearanceOf(entry) === "REVEALED" || unsealed.includes(entry.file) || admin
         ? { ...entry, revealed: true }
         : { file: entry.file, revealed: false, ...(entry.role ? { role: entry.role } : {}) },
     );

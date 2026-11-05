@@ -56,7 +56,7 @@ function RosterPage() {
   }, []);
 
   useLiveGuests();
-  const files = getRosterFiles(unsealed);
+  const files = getRosterFiles(unsealed, adminView);
   const revealedCount = files.filter((f) => f.revealed).length;
 
   const grouped = ROLE_GROUPS.map((g) => ({
