@@ -708,3 +708,30 @@ html { scroll-behavior: smooth; }
   .ps-door-figure { transform: none !important; opacity: 0.7 !important; }
   .ps-door-scratch { opacity: 0.5 !important; }
 }
+
+/* ---- Hard gate (Who's inside?) ---- */
+.gate-rattle-l { animation: gate-rattle-l .16s steps(2) infinite; }
+.gate-rattle-r { animation: gate-rattle-r .19s steps(2) infinite; }
+@keyframes gate-rattle-l { 0%{transform:translateX(0) rotate(0)} 50%{transform:translateX(-6px) rotate(-.25deg)} 100%{transform:translateX(3px) rotate(.15deg)} }
+@keyframes gate-rattle-r { 0%{transform:translateX(0) rotate(0)} 50%{transform:translateX(6px) rotate(.25deg)} 100%{transform:translateX(-3px) rotate(-.15deg)} }
+.gate-quake { animation: gate-quake .9s ease-in-out infinite; }
+@keyframes gate-quake { 0%,100%{transform:translate(0,0)} 10%{transform:translate(-3px,2px)} 20%{transform:translate(4px,-2px)} 30%{transform:translate(-2px,-3px)} 40%{transform:translate(0,0)} }
+.gate-bolt { animation: gate-bolt .22s ease-in-out infinite alternate; }
+@keyframes gate-bolt { from{filter:brightness(1)} to{filter:brightness(1.8); transform:translateX(4px)} }
+.gate-line { animation: gate-line .35s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes gate-line { from{opacity:0; transform:translateX(-10px); filter:blur(4px)} to{opacity:1; transform:none; filter:none} }
+.gate-panel { animation: gate-panel .45s cubic-bezier(.2,.9,.2,1.2) both; }
+@keyframes gate-panel { from{opacity:0; transform:scale(.9) translateY(10px)} to{opacity:1; transform:none} }
+.gate-panel-denied { box-shadow: 0 0 0 1px var(--destructive), 0 0 40px color-mix(in oklab, var(--destructive) 45%, transparent); animation: gate-denied .12s steps(2) infinite; }
+@keyframes gate-denied { 50%{transform:translateX(-4px)} 100%{transform:translateX(4px)} }
+.gate-flash { background: radial-gradient(ellipse at center, color-mix(in oklab, var(--rust) 55%, transparent), transparent 60%); animation: gate-flash .9s ease-out both; }
+@keyframes gate-flash { from{opacity:1} to{opacity:0} }
+
+/* ---- Breakout complete ---- */
+.breakout-card { animation: breakout-in .9s cubic-bezier(.2,.9,.2,1.15) both; }
+@keyframes breakout-in { 0%{opacity:0; transform:scale(.85) rotate(-1deg); filter:blur(8px)} 60%{opacity:1; transform:scale(1.03)} 100%{transform:none; filter:none} }
+.breakout-title { animation: breakout-shake 3.5s ease-in-out infinite; }
+@keyframes breakout-shake { 0%,88%,100%{transform:none} 90%{transform:translate(-4px,1px) rotate(-.6deg)} 92%{transform:translate(5px,-1px) rotate(.6deg)} 94%{transform:translate(-3px,0)} 96%{transform:translate(2px,1px)} }
+@media (prefers-reduced-motion: reduce) {
+  .gate-rattle-l,.gate-rattle-r,.gate-quake,.gate-bolt,.gate-line,.gate-panel,.gate-panel-denied,.gate-flash,.breakout-card,.breakout-title { animation: none; }
+}

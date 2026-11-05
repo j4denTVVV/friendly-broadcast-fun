@@ -5,7 +5,8 @@ import { PageShell } from "@/components/prison/PageShell";
 import { FileCard } from "@/components/prison/FileCard";
 import { Reveal } from "@/components/prison/Reveal";
 import { ClassifiedPanel, DataRow } from "@/components/prison/Classified";
-import { BreakoutDoor } from "@/components/prison/BreakoutDoor";
+import { BreakoutComplete } from "@/components/prison/BreakoutComplete";
+import { isAdminView } from "@/lib/roster";
 import { getRosterFiles, readUnsealedFiles } from "@/lib/roster";
 import { terms } from "@/config/prison";
 
@@ -38,7 +39,11 @@ const ROLE_GROUPS: { key: string; label: string; match: (role?: string) => boole
 
 function RosterPage() {
   const [unsealed, setUnsealed] = useState<string[]>([]);
-  useEffect(() => setUnsealed(readUnsealedFiles()), []);
+  const [adminView, setAdminView] = useState(false);
+  useEffect(() => {
+    setUnsealed(readUnsealedFiles());
+    setAdminView(isAdminView());
+  }, []);
 
   useLiveGuests();
   const files = getRosterFiles(unsealed);
@@ -57,7 +62,7 @@ function RosterPage() {
       title="Who's inside?"
       subtitle="Every file has a place here. Most identities are sealed — guess a name in the clearance database to unseal its file."
     >
-      <BreakoutDoor className="mb-10" />
+      {revealedCount === files.length || adminView ? <BreakoutComplete admin={adminView && revealedCount !== files.length} total={files.length} /> : null}
 
       <div className="mb-10 max-w-md">
         <ClassifiedPanel title="Clearance summary">

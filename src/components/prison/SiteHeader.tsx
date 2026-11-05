@@ -23,6 +23,7 @@ export const navLinks = [
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [entering, setEntering] = useState(false);
+  const [hardGate, setHardGate] = useState(false);
   const destination = useRef<(typeof navLinks)[number]["to"] | null>(null);
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
@@ -42,6 +43,7 @@ export function SiteHeader() {
       return;
     }
     destination.current = to;
+    setHardGate(to === "/roster");
     setEntering(true);
   };
 
@@ -54,7 +56,7 @@ export function SiteHeader() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">
-      <DoorTransition active={entering} onComplete={finishGate} />
+      <DoorTransition active={entering} onComplete={finishGate} hard={hardGate} />
       <SiteBanner />
       <div className="hazard-strip h-[3px] w-full opacity-30" />
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
