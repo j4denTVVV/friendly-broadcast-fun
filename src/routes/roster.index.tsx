@@ -10,6 +10,16 @@ import { isAdminView } from "@/lib/roster";
 import { getRosterFiles, readUnsealedFiles } from "@/lib/roster";
 import { terms } from "@/config/prison";
 
+/** Stable pseudo-random shake timing per file so cards rattle out of sync. */
+function jostleStyle(file: string) {
+  let h = 0;
+  for (const c of file) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0;
+  const duration = 4.5 + (h % 500) / 100;
+  const delay = -((h >>> 9) % 900) / 100;
+  return { animationDuration: `${duration}s`, animationDelay: `${delay}s` };
+}
+
 export const Route = createFileRoute("/roster/")({
   head: () => ({
     meta: [
@@ -99,7 +109,7 @@ function RosterPage() {
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
               {section.entries.map((f, i) => (
                 <Reveal key={f.file} delay={(i % 4) * 80}>
-                  <div className="ps-jostle" style={{ animationDelay: `${(i % 4) * 420}ms` }}>
+                  <div className="ps-jostle" style={jostleStyle(f.file)}>
                     <FileCard entry={f} index={i} />
                   </div>
                 </Reveal>
