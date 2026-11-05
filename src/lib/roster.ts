@@ -55,7 +55,7 @@ export function getRosterFiles(unsealed: string[] = []): RosterEntry[] {
     .filter((r) => r.revealed || isAdminView())
     .sort((a, b) => a.file.localeCompare(b.file, undefined, { numeric: true }))
     .map((entry) =>
-      clearanceOf(entry) === "REVEALED" || unsealed.includes(entry.file)
+      clearanceOf(entry) === "REVEALED" || unsealed.includes(entry.file) || isAdminView()
         ? { ...entry, revealed: true }
         : { file: entry.file, revealed: false, ...(entry.role ? { role: entry.role } : {}) },
     );
@@ -66,7 +66,7 @@ export function findFile(fileId: string, unsealed: string[] = []): RosterEntry {
   if (!entry) return { file: fileId, revealed: false };
 
   const isPublic = clearanceOf(entry) === "REVEALED";
-  const isPersonallyUnsealed = unsealed.includes(entry.file);
+  const isPersonallyUnsealed = unsealed.includes(entry.file) || isAdminView();
   return isPublic || isPersonallyUnsealed ? { ...entry, revealed: true } : { file: entry.file, revealed: false };
 }
 
