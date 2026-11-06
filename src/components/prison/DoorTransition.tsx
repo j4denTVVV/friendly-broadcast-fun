@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { playSfx } from "@/lib/sfx";
 import { createPortal } from "react-dom";
 import rust from "@/assets/texture-rust.jpg";
 import { isAdminView } from "@/lib/roster";
@@ -46,6 +47,7 @@ export function DoorTransition({
     }
     const gap = hard ? 420 : 300;
     setPhase("closing");
+    playSfx("clank");
     setStep(0);
     const timers: ReturnType<typeof setTimeout>[] = [];
     timers.push(setTimeout(() => setPhase("scanning"), 700));
@@ -54,6 +56,7 @@ export function DoorTransition({
     timers.push(
       setTimeout(() => {
         setPhase("opening");
+        playSfx(hard ? "reveal" : "clank");
         onComplete();
       }, openAt),
     );

@@ -57,7 +57,7 @@ export function getRosterFiles(unsealed: string[] = [], admin: boolean = isAdmin
     .map((entry) =>
       clearanceOf(entry) === "REVEALED" || unsealed.includes(entry.file) || admin
         ? { ...entry, revealed: true }
-        : { file: entry.file, revealed: false, ...(entry.role ? { role: entry.role } : {}) },
+        : { file: entry.file, revealed: false, ...(hintFor(entry) ? { hint: hintFor(entry) as string } : {}), ...(entry.role ? { role: entry.role } : {}) },
     );
 }
 
@@ -108,4 +108,13 @@ export function isAdminView(): boolean {
   } catch {
     return false;
   }
+}
+
+/** A guessing clue for sealed files: first letter, length, platform. */
+export function hintFor(entry: RosterEntry): string | undefined {
+  const n = (entry.name ?? "").replace(/[^a-z0-9]/gi, "");
+  if (!n) return undefined;
+  const parts = [`${n.charAt(0).toUpperCase()}${"•".repeat(Math.max(0, n.length - 1))}`, `${n.length} chars`];
+  if (entry.platform) parts.push(entry.platform.toUpperCase());
+  return parts.join(" · ");
 }

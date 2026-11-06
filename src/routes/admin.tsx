@@ -196,7 +196,8 @@ function AdminPage() {
             role="tab"
             aria-selected={tab === key}
             onClick={() => setTab(key)}
-            className={`admin-section relative h-auto min-h-36 flex-col items-start justify-between rounded-none border-b border-border p-5 text-left transition-colors hover:bg-signal/5 sm:border-b-0 ${i > 0 ? "lg:border-l" : ""} ${
+            style={{ animationDelay: `${i * 90}ms` }}
+            className={`admin-section admin-stat relative h-auto min-h-36 flex-col items-start justify-between rounded-none border-b border-border p-5 text-left transition-colors hover:bg-signal/5 sm:border-b-0 ${i > 0 ? "lg:border-l" : ""} ${
               tab === key ? "bg-signal/10" : "bg-card/30"
             }`}
           >
@@ -212,6 +213,7 @@ function AdminPage() {
 
       <div className="mb-6 mt-8 flex flex-wrap items-center justify-between gap-3 border-b-2 border-border pb-4"><div><p className="font-mono text-[10px] uppercase text-signal">Workstation / {String(stats.findIndex((item) => item.key === tab) + 1).padStart(2, "0")}</p><h2 className="mt-1 font-display text-2xl uppercase sm:text-3xl">{stats.find((item) => item.key === tab)?.label}</h2></div><span className="font-mono text-[10px] uppercase text-muted-foreground">Session active <span className="text-signal">●</span></span></div>
 
+      <div key={tab} className="admin-panel-in relative">
       {tab === "guests" ? (
         <GuestsAdmin onCount={setGuestCount} />
       ) : tab === "apps" ? (
@@ -347,6 +349,7 @@ function AdminPage() {
           </div>
         </div>
       )}
+      </div>
     </section></div>
   );
 }

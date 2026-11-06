@@ -42,6 +42,11 @@ export function FileCard({ entry, index = 0 }: { entry: RosterEntry; index?: num
               ?
             </div>
             <span className="label-mono">Identity unknown</span>
+            {entry.hint ? (
+              <span className="file-hint mt-1 border border-rust/40 bg-rust/10 px-2 py-1 font-mono text-[10px] tracking-[0.2em] text-rust">
+                HINT: {entry.hint}
+              </span>
+            ) : null}
           </div>
         )}
         <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,0.35)_0px,rgba(0,0,0,0.35)_1px,transparent_1px,transparent_4px)] opacity-60" />

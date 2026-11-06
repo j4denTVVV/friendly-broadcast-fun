@@ -16,6 +16,7 @@ import { Toaster } from "sonner";
 import { Atmosphere } from "@/components/prison/Atmosphere";
 import { SiteHeader } from "@/components/prison/SiteHeader";
 import { LiveNotifications } from "@/components/prison/LiveNotifications";
+import { UiSfx } from "@/components/prison/UiSfx";
 import { SiteFooter } from "@/components/prison/SiteFooter";
 
 function NotFoundComponent() {
@@ -142,6 +143,7 @@ function RootComponent() {
       <SiteFooter />
       <Toaster theme="dark" position="bottom-right" />
       <LiveNotifications />
+      <UiSfx />
       <ScrollReveal />
     </QueryClientProvider>
   );
