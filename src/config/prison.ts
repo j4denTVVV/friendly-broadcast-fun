@@ -128,6 +128,8 @@ export type RosterEntry = {
   status?: string;
   /** position within the organisation, if revealed */
   role?: string;
+  /** clue shown on sealed cards */
+  hint?: string;
 };
 
 
