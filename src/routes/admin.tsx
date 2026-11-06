@@ -349,6 +349,7 @@ function AdminPage() {
           </div>
         </div>
       )}
+      </div>
     </section></div>
   );
 }

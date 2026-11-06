@@ -1,3 +1,4 @@
+import { playSfx } from "@/lib/sfx";
 import { useLiveGuests } from "@/lib/live-guests";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
@@ -264,6 +265,7 @@ function RevealsPage() {
               /* ignore */
             }
             unseal(winner);
+            playSfx("reveal");
             return;
           }
           setSpinLabel(`FILE ${String(Math.floor(Math.random() * 40) + 1).padStart(3, "0")}`);
@@ -311,6 +313,7 @@ function RevealsPage() {
           return;
         }
         unseal(entry);
+        playSfx("reveal");
       }, SCAN_LINES.length * STEP_MS),
     );
   };
