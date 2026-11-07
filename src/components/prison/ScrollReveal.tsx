@@ -1,27 +1,32 @@
 import { useEffect } from "react";
 import { useRouterState } from "@tanstack/react-router";
 
-/** Fades sections and cards in as they scroll into view. Presentation only. */
+/** Opt-in scroll reveals; dynamic controls and admin panels are never hidden. */
 export function ScrollReveal() {
-  const path = useRouterState({ select: (s) => s.location.pathname });
+  const path = useRouterState({ select: (state) => state.location.pathname });
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => {
-        if (e.isIntersecting) { e.target.classList.add("sr-in"); io.unobserve(e.target); }
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("sr-in");
+          observer.unobserve(entry.target);
+        }
       }),
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
+      { threshold: 0.08, rootMargin: "0px 0px -5% 0px" },
     );
-    const t = setTimeout(() => {
-      document.querySelectorAll("main section:not(:first-child), .panel").forEach((el, i) => {
-        const r = el.getBoundingClientRect();
-        if (r.top < window.innerHeight) return;
-        el.classList.add("sr");
-        (el as HTMLElement).style.setProperty("--sr-delay", `${(i % 4) * 70}ms`);
-        io.observe(el);
+    const frame = requestAnimationFrame(() => {
+      document.querySelectorAll("[data-scroll-reveal]").forEach((element, index) => {
+        if (element.getBoundingClientRect().top < window.innerHeight * 0.92) return;
+        element.classList.add("sr");
+        (element as HTMLElement).style.setProperty("--sr-delay", `${(index % 3) * 60}ms`);
+        observer.observe(element);
       });
-    }, 60);
-    return () => { clearTimeout(t); io.disconnect(); };
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
   }, [path]);
   return null;
 }

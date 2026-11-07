@@ -19,3 +19,12 @@
 
 - [x] Admin view unlocks control-room-added files (040+)
 - [x] Roster files shake randomly, not in rows
+
+## Cinematic redesign & animation upgrade
+- [ ] Remove the generic page-click sound while keeping intentional gate and reveal effects
+- [ ] Establish one restrained cinematic motion and visual system across every page
+- [ ] Navigate only while the gate is fully closed, then open the doors more slowly
+- [ ] Upgrade the homepage hero, navigation, database, reveals and creator profiles
+- [ ] Improve application and control-room layouts without changing their behaviour
+- [ ] Verify public routes, search/reveal/spin, navigation, responsive layouts and reduced motion
+- [ ] Verify application submission and unlocked control-room workflows where credentials permit
