@@ -407,7 +407,7 @@ function RevealsPage() {
                 ) : (
                   <ShieldCheck className="h-5 w-5" />
                 )}
-                <span className="font-mono text-[11px] tracking-[0.28em] uppercase">
+                <span classNameclassName="font-mono text-[11px] tracking-[0.28em] uppercase">
                   {phase === "nomatch" ? "No match found" : "Record sealed"}
                 </span>
               </div>
