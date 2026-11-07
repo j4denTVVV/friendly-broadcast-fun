@@ -1,5 +1,5 @@
 /** Tiny synthesized sound-effects kit (WebAudio, no assets). Browser only. */
-type Sfx = "click" | "hover" | "clank" | "denied" | "reveal" | "glitch" | "whisper";
+type Sfx = "hover" | "clank" | "denied" | "reveal" | "glitch" | "whisper";
 const MUTE_KEY = "ps-sfx-muted";
 let ctx: AudioContext | null = null;
 let lastHover = 0;
