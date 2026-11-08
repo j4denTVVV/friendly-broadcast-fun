@@ -416,8 +416,6 @@ a:hover .brand-mark { transform: rotate(-3deg) scale(1.04); opacity: 1; }
 .gate-panel { animation: gate-panel 420ms var(--ease-cinema) both; }
 @keyframes gate-panel { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 .gate-panel-denied { border-color: var(--destructive); }
-.gate-flash { background: radial-gradient(ellipse at center, color-mix(in oklab, var(--rust) 30%, transparent), transparent 65%); animation: gate-flash 900ms ease-out both; }
-@keyframes gate-flash { from { opacity: 0.8; } to { opacity: 0; } }
 
 /* Core ambient animations */
 @keyframes flicker { 0%, 100%, 8%, 10%, 38%, 40%, 72%, 74% { opacity: 1; } 9%, 39%, 73% { opacity: 0.58; } }

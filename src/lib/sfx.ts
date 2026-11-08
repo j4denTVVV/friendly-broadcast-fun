@@ -1,5 +1,5 @@
 /** Tiny synthesized sound-effects kit (WebAudio, no assets). Browser only. */
-type Sfx = "hover" | "clank" | "denied" | "reveal" | "glitch" | "whisper";
+type Sfx = "hover" | "click" | "clank" | "denied" | "reveal" | "glitch" | "whisper";
 const MUTE_KEY = "ps-sfx-muted";
 let ctx: AudioContext | null = null;
 let lastHover = 0;
@@ -67,6 +67,10 @@ export function playSfx(name: Sfx) {
       tone(c, 1800, 0.03, "square", 0.012);
       break;
     }
+    case "click":
+      noise(c, 0.065, 0.12, 1200, 0, 2);
+      tone(c, 320, 0.075, "triangle", 0.035, 0, 140);
+      break;
     case "clank":
       noise(c, 0.5, 0.5, 600, 0, 2);
       tone(c, 90, 0.6, "sawtooth", 0.08, 0, 45);
@@ -102,8 +106,14 @@ export function installUiSfx() {
     if (t && t !== lastEl) playSfx("hover");
     lastEl = t;
   };
+  const press = (e: Event) => {
+    const target = isTarget(e.target);
+    if (target && !target.matches(":disabled,[aria-disabled=true]")) playSfx("click");
+  };
   document.addEventListener("pointerover", over);
+  document.addEventListener("click", press);
   return () => {
     document.removeEventListener("pointerover", over);
+    document.removeEventListener("click", press);
   };
 }
