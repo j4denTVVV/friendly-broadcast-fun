@@ -16,6 +16,8 @@ export const Route = createFileRoute("/bulletin")({
       },
       { property: "og:title", content: "The Bulletin — PRISON STREAM" },
       { property: "og:description", content: "Official transmissions. Status: verified." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: BulletinPage,

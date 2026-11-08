@@ -6,7 +6,7 @@ import { getBannerAdmin, saveBanner, type BannerMessage, type BannerRow } from "
 import { BannerStrip, BannerText } from "./SiteBanner";
 
 const blank: BannerMessage = { text: "", link: null, animation: "slide" };
-const input = "hairline mt-2 w-full bg-background/70 px-3 py-3 font-mono text-xs outline-none focus:border-warning";
+const input = "field-input mt-2";
 
 export function BannerAdmin() {
   const load = useServerFn(getBannerAdmin);
