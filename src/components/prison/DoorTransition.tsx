@@ -80,8 +80,9 @@ export function DoorTransition({
   const denied = hard && step >= 3 && step < lines.length;
   const showTerminal = phase === "scanning" || phase === "covered";
 
-  const Door = ({ side }: { side: "left" | "right" }) => (
+  const door = (side: "left" | "right") => (
     <div
+      key={side}
       className={`gate-door absolute inset-y-0 w-1/2 overflow-hidden ${side === "left" ? "left-0 border-r" : "right-0 border-l"} border-rust-deep/70 ${
         phase === "closing" ? `gate-close-${side}` : ""
       } ${rattling ? (side === "left" ? "gate-rattle-l" : "gate-rattle-r") : ""}`}
@@ -100,9 +101,8 @@ export function DoorTransition({
 
   return createPortal(
     <div className={`fixed inset-0 z-[100] ${rattling ? "gate-quake" : ""}`} aria-hidden>
-      <Door side="left" />
-      <Door side="right" />
-      {phase === "opening" ? <div className="gate-flash pointer-events-none absolute inset-0" /> : null}
+      {door("left")}
+      {door("right")}
       {showTerminal ? (
         <div className="absolute inset-0 z-10 flex items-center justify-center px-4">
           <div className={`panel corner-marks gate-panel w-[min(92vw,29rem)] p-6 ${denied ? "gate-panel-denied" : ""}`}>

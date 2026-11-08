@@ -6,6 +6,7 @@ import { Search, Lock, ShieldCheck, FileWarning, Dices } from "lucide-react";
 import { Confetti } from "@/components/prison/Confetti";
 import { PageShell } from "@/components/prison/PageShell";
 import { clearanceOf, creatorDatabase, searchCreator } from "@/lib/roster";
+import { Button } from "@/components/ui/button";
 import type { RosterEntry } from "@/config/prison";
 
 export const Route = createFileRoute("/reveals")({
@@ -29,16 +30,7 @@ export const Route = createFileRoute("/reveals")({
   component: RevealsPage,
 });
 
-const SCAN_LINES = [
-  "DATABASE ACCESS REQUESTED",
-  "CONNECTING TO DATABASE...",
-  "SEARCHING IDENTITIES...",
-  "SCANNING RECORDS...",
-  "MATCH ANALYSIS...",
-  "VERIFYING DATABASE ENTRY...",
-];
-
-const STEP_MS = 620;
+const SCAN_LINES = ["LOCAL IDENTITY INDEX", "QUERY CHECKED", "FILE STATUS VERIFIED"];
 
 type Phase = "idle" | "scanning" | "match" | "classified" | "nomatch";
 
@@ -48,7 +40,7 @@ function Terminal({ lines }: { lines: string[] }) {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-full">
         <div className="h-px w-full animate-sweep bg-rust/80" />
       </div>
-      <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,0.35)_0px,rgba(0,0,0,0.35)_1px,transparent_1px,transparent_4px)] opacity-50" />
+      <div className="pointer-events-none absolute inset-0 media-scanlines opacity-50" />
       <ul className="relative space-y-2 font-mono text-[11px] tracking-[0.24em] uppercase sm:text-xs">
         {lines.map((l, i) => (
           <li
@@ -87,7 +79,7 @@ function SocialList({ entry }: { entry: RosterEntry }) {
 
 function FileUnseal({ entry }: { entry: RosterEntry }) {
   return (
-    <div className="panel corner-marks grain reveal-pop relative mt-8 overflow-hidden">
+    <div className="panel corner-marks grain scan-result relative mt-8 overflow-hidden">
       <Confetti key={entry.file} />
       <div className="hazard-strip h-1.5 w-full opacity-70" />
       <div className="grid gap-6 p-5 sm:grid-cols-[minmax(0,240px)_1fr] sm:p-8">
@@ -104,7 +96,7 @@ function FileUnseal({ entry }: { entry: RosterEntry }) {
               <Lock className="h-7 w-7 text-muted-foreground/50" />
             </div>
           )}
-          <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,0.28)_0px,rgba(0,0,0,0.28)_1px,transparent_1px,transparent_4px)] opacity-50" />
+          <div className="pointer-events-none absolute inset-0 media-scanlines opacity-50" />
         </div>
 
         <div>
@@ -150,7 +142,7 @@ function GuestCard({ entry }: { entry: RosterEntry }) {
             <Lock className="h-6 w-6 text-muted-foreground/50" />
           </div>
         )}
-        <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,0.25)_0px,rgba(0,0,0,0.25)_1px,transparent_1px,transparent_4px)] opacity-45" />
+        <div className="pointer-events-none absolute inset-0 media-scanlines opacity-45" />
       </div>
       <div className="p-5">
         <span className="label-mono text-rust">File {entry.file}</span>
@@ -244,7 +236,8 @@ function RevealsPage() {
       setSpinLabel("ALL FILES UNSEALED");
       return;
     }
-    const winner = pool[Math.floor(Math.random() * pool.length)]!;
+    const winner = pool[Math.floor(Math.random() * pool.length)];
+    if (!winner) return;
     setSpinning(true);
     setPhase("idle");
     setResult(null);
@@ -294,28 +287,12 @@ function RevealsPage() {
     timers.current = [];
     setAttempted(term);
     setResult(null);
-    setStep(1);
-    setPhase("scanning");
-
-    for (let i = 2; i <= SCAN_LINES.length; i++) {
-      timers.current.push(setTimeout(() => setStep(i), (i - 1) * STEP_MS));
-    }
-
-    timers.current.push(
-      setTimeout(() => {
-        const entry = searchCreator(term);
-        if (!entry) {
-          setPhase("nomatch");
-          return;
-        }
-        if (clearanceOf(entry) === "CLASSIFIED") {
-          setPhase("classified");
-          return;
-        }
-        unseal(entry);
-        playSfx("reveal");
-      }, SCAN_LINES.length * STEP_MS),
-    );
+    setStep(SCAN_LINES.length);
+    const entry = searchCreator(term);
+    if (!entry) { setPhase("nomatch"); return; }
+    if (clearanceOf(entry) === "CLASSIFIED") { setPhase("classified"); return; }
+    unseal(entry);
+    playSfx("reveal");
   };
 
   const reset = () => {
@@ -339,7 +316,7 @@ function RevealsPage() {
       title="The reveals"
       subtitle="Think you know who's inside? Search the clearance database. Confirmed files are unsealed on match — everything else stays classified."
     >
-      <section className="panel corner-marks grain vignette relative overflow-hidden p-6 sm:p-10">
+      <section className="search-terminal border-y border-border relative py-8 sm:py-12">
         <div className="mx-auto max-w-2xl text-center">
           <div className="flex items-center justify-center gap-3">
             <span className="h-px w-8 bg-rust" />
@@ -354,7 +331,7 @@ function RevealsPage() {
             <label htmlFor="creator-search" className="sr-only">
               Enter creator name
             </label>
-            <div className="relative">
+            <div className="search-field relative">
               <Search className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 id="creator-search"
@@ -365,19 +342,19 @@ function RevealsPage() {
                 className="h-14 w-full border border-border bg-background/80 pr-4 pl-11 font-mono text-sm tracking-[0.18em] uppercase outline-none placeholder:text-muted-foreground/70 focus:border-rust sm:h-16 sm:text-base"
               />
             </div>
-            <button
+            <Button
               type="submit"
               disabled={phase === "scanning"}
               className="inline-flex h-14 w-full items-center justify-center gap-3 border border-rust bg-rust/15 px-6 font-mono text-[11px] tracking-[0.28em] uppercase transition-colors hover:bg-rust/30 disabled:opacity-50 sm:h-16 sm:w-auto sm:min-w-64"
             >
               {phase === "scanning" ? "Scanning..." : "Search database →"}
-            </button>
+            </Button>
           </form>
 
           <div className="mt-8 border border-rust/50 bg-background/70 p-5">
             <p className="label-mono text-rust">Clearance spin</p>
-            <p className="mt-3 font-display text-4xl uppercase tabular-nums sm:text-5xl">{spinLabel}</p>
-            <button
+            <p className="spin-display mt-3 font-display text-4xl uppercase tabular-nums sm:text-5xl">{spinLabel}</p>
+            <Button
               type="button"
               onClick={spin}
               disabled={spinning || spunToday}
@@ -385,7 +362,7 @@ function RevealsPage() {
             >
               <Dices className="h-4 w-4" />
               {spinning ? "Spinning..." : spunToday ? "Come back later" : "Spin to unseal a file"}
-            </button>
+            </Button>
             <p className="mt-3 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{spinsLeft} of 3 spins left · resets every 2 hours</p>
           </div>
 
@@ -407,7 +384,7 @@ function RevealsPage() {
                 ) : (
                   <ShieldCheck className="h-5 w-5" />
                 )}
-                <span classNameclassName="font-mono text-[11px] tracking-[0.28em] uppercase">
+                <span className="font-mono text-[11px] tracking-[0.28em] uppercase">
                   {phase === "nomatch" ? "No match found" : "Record sealed"}
                 </span>
               </div>
@@ -431,12 +408,12 @@ function RevealsPage() {
 
         {phase !== "idle" && phase !== "scanning" ? (
           <div className="mt-8 text-center">
-            <button
+            <Button
               onClick={reset}
               className="hairline px-5 py-2.5 font-mono text-[10px] tracking-[0.26em] uppercase text-muted-foreground transition-colors hover:border-rust hover:text-rust"
             >
               New search
-            </button>
+            </Button>
           </div>
         ) : null}
       </section>

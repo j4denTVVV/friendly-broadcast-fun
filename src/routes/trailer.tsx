@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ExternalLink, Play } from "lucide-react";
@@ -15,6 +16,8 @@ export const Route = createFileRoute("/trailer")({
       },
       { property: "og:title", content: "CAM-001 Trailer — PRISON STREAM" },
       { property: "og:description", content: "The first transmission is live." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: TrailerPage,
@@ -58,9 +61,9 @@ function TrailerPage() {
               allowFullScreen
             />
           ) : (
-            <button
+            <Button variant="ghost"
               onClick={() => setPlaying(true)}
-              className="group flex h-full w-full flex-col items-center justify-center gap-4"
+              className="group rounded-none flex h-full w-full flex-col items-center justify-center gap-4"
             >
               <span className="flex h-16 w-16 items-center justify-center border border-rust bg-rust/15 transition-colors group-hover:bg-rust/30">
                 <Play className="h-6 w-6" />
@@ -68,7 +71,7 @@ function TrailerPage() {
               <span className="font-mono text-[11px] tracking-[0.3em] uppercase">
                 Play transmission
               </span>
-            </button>
+            </Button>
           )
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center gap-4">
@@ -78,7 +81,7 @@ function TrailerPage() {
             <span className="label-mono">No footage cleared for release</span>
           </div>
         )}
-        <div className="pointer-events-none absolute inset-0 z-10 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,0.28)_0px,rgba(0,0,0,0.28)_1px,transparent_1px,transparent_4px)] opacity-70" />
+        <div className="pointer-events-none absolute inset-0 z-10 media-scanlines opacity-70" />
       </div>
 
       {trailer.released && trailer.url ? (

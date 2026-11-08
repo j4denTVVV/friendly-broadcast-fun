@@ -15,6 +15,8 @@ export const Route = createFileRoute("/live")({
       },
       { property: "og:title", content: "Live Transmissions — PRISON STREAM" },
       { property: "og:description", content: "No active transmissions. The system is waiting." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: LivePage,

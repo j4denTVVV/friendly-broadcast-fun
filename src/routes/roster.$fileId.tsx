@@ -19,6 +19,8 @@ export const Route = createFileRoute("/roster/$fileId")({
         },
         { property: "og:title", content: title },
         { property: "og:description", content: "Identity classified. Access denied." },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
       ],
     };
   },
@@ -52,7 +54,7 @@ function FilePage() {
       </Link>
 
       <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="panel corner-marks grain relative aspect-[3/4] overflow-hidden">
+        <div className="profile-photo corner-marks grain relative aspect-[3/4] overflow-hidden">
           {entry.revealed && entry.image ? (
             <img
               src={entry.image}
@@ -66,10 +68,10 @@ function FilePage() {
               <span className="label-mono">Photograph withheld</span>
             </div>
           )}
-          <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,0.3)_0px,rgba(0,0,0,0.3)_1px,transparent_1px,transparent_4px)] opacity-60" />
+          <div className="pointer-events-none absolute inset-0 media-scanlines opacity-60" />
         </div>
 
-        <div className="space-y-6">
+        <div className="profile-record space-y-6">
           <ClassifiedPanel title={`Record ${entry.file}`}>
             <DataRow
               label="Identity"

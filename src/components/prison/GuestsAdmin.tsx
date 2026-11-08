@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ImageUp, Pencil, Plus, RotateCcw, Search, Trash2, UserRound, X } from "lucide-react";
@@ -36,7 +37,7 @@ const empty = {
 type Draft = typeof empty & { id?: string };
 
 const input =
-  "hairline mt-1.5 w-full bg-background/70 px-3 py-2.5 font-mono text-sm outline-none transition-colors focus:border-rust";
+  "field-input mt-2";
 
 function parseSocials(text: string) {
   return text
@@ -84,7 +85,7 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
         byFile.delete(r.file);
         return {
           file: r.file,
-          name: row && !row.deleted ? row.name : r.name!,
+          name: row && !row.deleted ? row.name : (r.name ?? "Unknown"),
           role: row && !row.deleted ? row.role : (r.role ?? "GUEST"),
           image: (row && !row.deleted && row.image_url) || r.image,
           original: true,
@@ -182,13 +183,13 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
             {draft.id ? "Edit file" : "New file"}
           </h3>
           {draft.id ? (
-            <button
+            <Button variant="outline"
               type="button"
               onClick={() => setDraft({ ...empty })}
               className="label-mono flex items-center gap-1 hover:text-foreground"
             >
               <X className="h-3.5 w-3.5" /> Cancel
-            </button>
+            </Button>
           ) : null}
         </div>
 
@@ -251,9 +252,9 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
             className="hairline mt-1.5 w-full bg-background/70 px-3 py-2.5 font-mono text-xs outline-none focus:border-rust"
           />
           {draft.image_url ? (
-            <button type="button" onClick={() => setDraft({ ...draft, image_url: "" })} className="label-mono mt-1 hover:text-foreground">
+            <Button variant="outline" type="button" onClick={() => setDraft({ ...draft, image_url: "" })} className="label-mono mt-1 hover:text-foreground">
               Remove photo
-            </button>
+            </Button>
           ) : null}
         </div>
         {field("aliases", "Search nicknames (comma separated)", "NICK, OTHER NAME")}
@@ -301,14 +302,14 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
         </div>
         {error ? <p className="font-mono text-xs text-destructive uppercase">{error}</p> : null}
         {notice ? <p className="font-mono text-xs text-rust uppercase">{notice}</p> : null}
-        <button
+        <Button variant="outline"
           type="submit"
           disabled={busy || uploading}
           className="hairline flex w-full items-center justify-center gap-2 bg-card px-4 py-3.5 font-mono text-[11px] tracking-[0.3em] uppercase transition-colors hover:border-rust disabled:opacity-50"
         >
           <Plus className="h-4 w-4" />
           {busy ? "Saving…" : draft.id ? "Save changes" : "Add to roster"}
-        </button>
+        </Button>
       </form>
 
       <div className="space-y-4">
@@ -329,7 +330,7 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
         {filtered.map((g) => (
           <article
             key={g.file}
-            className={`panel flex items-center gap-4 p-4 transition-colors hover:border-rust ${
+            className={`admin-table-row panel flex items-center gap-4 p-4 transition-colors hover:border-rust ${
               draft.file === g.file && draft.name ? "border-rust" : ""
             } ${g.removed ? "opacity-50" : ""}`}
           >
@@ -352,7 +353,7 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
             </div>
             <div className="flex flex-col gap-1">
               {g.removed ? (
-                <button
+                <Button variant="outline"
                   aria-label={`Restore ${g.name}`}
                   onClick={async () => {
                     if (g.row) await remove({ data: { id: g.row.id } });
@@ -361,13 +362,13 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
                   className="hairline p-2 hover:border-rust"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
-                </button>
+                </Button>
               ) : (
                 <>
-                  <button aria-label={`Edit ${g.name}`} onClick={() => startEdit(g)} className="hairline p-2 hover:border-rust">
+                  <Button variant="outline" aria-label={`Edit ${g.name}`} onClick={() => startEdit(g)} className="hairline p-2 hover:border-rust">
                     <Pencil className="h-3.5 w-3.5" />
-                  </button>
-                  <button
+                  </Button>
+                  <Button variant="outline"
                     aria-label={`Remove ${g.name}`}
                     onClick={async () => {
                       if (!confirm(`Remove ${g.name} from the site?`)) return;
@@ -378,7 +379,7 @@ export function GuestsAdmin({ onCount }: { onCount?: (n: number) => void }) {
                     className="hairline p-2 text-destructive hover:border-destructive"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
-                  </button>
+                  </Button>
                 </>
               )}
             </div>

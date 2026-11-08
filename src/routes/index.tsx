@@ -51,31 +51,30 @@ function Index() {
       <DoorTransition active={entering} onComplete={onDoorsOpen} />
 
       {/* HERO */}
-      <section className="grain relative flex min-h-[100svh] items-center overflow-hidden border-b border-border">
-        <div className="ps-hero-shudder absolute inset-0">
+      <section className="hero-section grain relative overflow-hidden border-b border-border">
+        <div className="hero-media">
           <img
             src={heroImg}
             alt="A heavy steel prison door standing ajar in a dark concrete corridor"
             width={1920}
             height={1088}
-            className="cine-kenburns absolute inset-0 h-full w-full object-cover object-right opacity-60"
+            className="hero-photo"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-background/60" />
+        <div className="hero-shade" />
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-32 pb-20 sm:px-6">
-          <div className="inline-flex items-center gap-3 border border-border bg-background/60 px-3 py-1.5">
+        <div className="hero-content mx-auto w-full max-w-7xl px-4 sm:px-6">
+          <div className="hero-copy"><div className="hero-kicker inline-flex items-center gap-3 border border-border bg-background/60 px-3 py-1.5">
             <StatusDot tone="live" />
             <span className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase">Unauthorized access detected</span>
           </div>
-          <h1 className="animate-rise mt-5 font-display text-[22vw] leading-[0.8] font-black uppercase sm:text-[10rem]">
-            <span className="block bg-gradient-to-b from-foreground/70 to-foreground bg-clip-text text-transparent">Prison</span>
-            <span className="block text-rust">Stream</span>
+          <h1 className="cine-title mt-8 font-display">
+            <span className="hero-word hero-word-first">Prison</span>
+            <span className="hero-word hero-word-rust">Stream</span>
           </h1>
-          <p className="mt-8 font-display text-3xl tracking-[0.2em] sm:text-4xl">The gates are opening.</p>
+          <p className="hero-statement mt-8 font-display text-3xl sm:text-4xl">The gates are opening.</p>
           <p className="mt-3 font-mono text-sm tracking-[0.35em] text-warning uppercase">{launch.window} {launch.year}</p>
-          <div className="mt-12 flex flex-wrap gap-3">
+          <div className="hero-actions mt-9 flex flex-wrap gap-3">
             <Button onClick={() => setEntering(true)} className="h-14 rounded-none border border-rust bg-rust/15 px-8 font-mono text-xs tracking-[0.28em] text-foreground uppercase hover:bg-rust/35">
               Enter the prison <ArrowRight className="size-4" />
             </Button>
@@ -83,7 +82,7 @@ function Index() {
               <Link to="/trailer"><Play className="size-4" /> Watch the trailer</Link>
             </Button>
           </div>
-          <div className="cine-stagger mt-14 grid max-w-2xl grid-cols-2 gap-8 sm:grid-cols-4">
+          <div className="hero-meta mt-12 grid max-w-2xl grid-cols-2 gap-6 sm:grid-cols-4">
             {[
               ["Launch window", `${launch.window} ${launch.year}`],
               ["Exact date", "Classified"],
@@ -96,7 +95,7 @@ function Index() {
               </div>
             ))}
           </div>
-        </div>
+        </div></div>
       </section>
 
       <SystemTicker />
@@ -222,7 +221,7 @@ function Index() {
 
       <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
         <Reveal>
-          <div className="panel grain relative overflow-hidden px-6 py-20 text-center sm:px-16">
+          <div className="grain relative overflow-hidden border-y border-border px-6 py-20 text-center sm:px-16">
             <p className="label-mono text-rust">Final notice</p>
             <p className="mx-auto mt-6 max-w-3xl font-display text-2xl leading-tight tracking-[0.06em] sm:text-4xl">
               Autumn 2026. The exact date? That information is currently behind locked doors.

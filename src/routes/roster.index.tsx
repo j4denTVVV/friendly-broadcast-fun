@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { PageShell } from "@/components/prison/PageShell";
 import { FileCard } from "@/components/prison/FileCard";
 import { Reveal } from "@/components/prison/Reveal";
-import { ClassifiedPanel, DataRow } from "@/components/prison/Classified";
 import { BreakoutComplete } from "@/components/prison/BreakoutComplete";
 import { isAdminView } from "@/lib/roster";
 import { getRosterFiles, readUnsealedFiles } from "@/lib/roster";
@@ -74,17 +73,8 @@ function RosterPage() {
     >
       {revealedCount === files.length || adminView ? <BreakoutComplete admin={adminView && revealedCount !== files.length} total={files.length} /> : null}
 
-      <div className="mb-10 max-w-md">
-        <ClassifiedPanel title="Clearance summary">
-          <DataRow label="Roster status" value="CLASSIFIED" tone="muted" />
-          <DataRow
-            label="Files released"
-            value={revealedCount === 0 ? "NONE" : String(revealedCount).padStart(2, "0")}
-            tone={revealedCount === 0 ? "muted" : "ok"}
-          />
-          <DataRow label="Files on record" value={String(files.length).padStart(2, "0")} tone="muted" />
-          <DataRow label="Next reveal" value="UNKNOWN" tone="warn" />
-        </ClassifiedPanel>
+      <div className="database-summary mb-8 grid-cols-2 sm:grid-cols-4">
+        {[["Roster status", adminView ? "ADMIN" : "CLASSIFIED"], ["Files released", String(revealedCount).padStart(2, "0")], ["Files on record", String(files.length).padStart(2, "0")], ["Next reveal", "UNKNOWN"]].map(([label, value]) => <div key={label} className="database-summary-cell"><p className="label-mono">{label}</p><p className="mt-2 font-mono text-sm text-rust">{value}</p></div>)}
       </div>
 
       <div className="mb-10">
@@ -99,12 +89,11 @@ function RosterPage() {
       <div className="space-y-12">
         {sections.map((section) => (
           <section key={section.key}>
-            <div className="mb-5 flex items-center gap-4">
+            <div className="database-section-head flex-wrap">
               <h2 className="font-display text-xl tracking-[0.25em] uppercase">{section.label}</h2>
               <span className="label-mono text-muted-foreground">
                 {String(section.entries.length).padStart(2, "0")} FILES
               </span>
-              <div className="hairline h-px flex-1 border-t" />
             </div>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
               {section.entries.map((f, i) => (

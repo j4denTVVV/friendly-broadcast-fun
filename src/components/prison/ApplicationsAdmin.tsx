@@ -1,5 +1,7 @@
 import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
   listApplications,
   setApplicationStatus,
@@ -58,7 +60,7 @@ export function ApplicationsAdmin({ onCount }: { onCount: (n: number) => void })
       {msg ? <p className={`label-mono ${msg.bad ? "text-destructive" : "text-rust"}`}>{msg.text}</p> : null}
       {apps.length === 0 ? <p className="label-mono">No entry requests yet.</p> : null}
       {apps.map((a) => (
-        <article key={a.id} className="panel space-y-2 p-5">
+        <article key={a.id} className="admin-table-row panel space-y-4 p-5 sm:p-6">
           <div className="flex flex-wrap items-center gap-3">
             <span className="font-display text-base tracking-[0.18em] uppercase">{a.name}</span>
             <span className="label-mono">@{a.handle}</span>
@@ -93,17 +95,17 @@ export function ApplicationsAdmin({ onCount }: { onCount: (n: number) => void })
               <div className="flex items-center gap-3 pt-1">
                 <span className="text-destructive">Email failed to send{a.decision_email_error ? ` — ${a.decision_email_error}` : ""}</span>
                 {a.status !== "PENDING" ? (
-                  <button disabled={busy === a.id} onClick={() => run(a, a.status, true)} className={`${btn} hover:border-rust`}>Retry email</button>
+                  <Button variant="outline" disabled={busy === a.id} onClick={() => run(a, a.status, true)} className={`${btn} hover:border-rust`}>Retry email</Button>
                 ) : null}
               </div>
             ) : null}
           </div>
 
           <div className="flex flex-wrap gap-2 pt-1">
-            <button disabled={busy === a.id} onClick={() => ask(a, "ACCEPTED")} className={`${btn} hover:border-rust`}>Accept application</button>
-            <button disabled={busy === a.id} onClick={() => ask(a, "REJECTED")} className={`${btn} text-destructive hover:border-destructive`}>Reject application</button>
-            <button disabled={busy === a.id || a.status === "PENDING"} onClick={() => run(a, "PENDING", false)} className={btn}>Mark as pending</button>
-            <button
+            <Button variant="outline" disabled={busy === a.id} onClick={() => ask(a, "ACCEPTED")} className={`${btn} hover:border-rust`}>Accept application</Button>
+            <Button variant="outline" disabled={busy === a.id} onClick={() => ask(a, "REJECTED")} className={`${btn} text-destructive hover:border-destructive`}>Reject application</Button>
+            <Button variant="outline" disabled={busy === a.id || a.status === "PENDING"} onClick={() => run(a, "PENDING", false)} className={btn}>Mark as pending</Button>
+            <Button variant="outline"
               disabled={busy === a.id}
               onClick={async () => {
                 if (!window.confirm(`Delete ${a.name}'s application?`)) return;
@@ -113,14 +115,15 @@ export function ApplicationsAdmin({ onCount }: { onCount: (n: number) => void })
               className={`${btn} ml-auto text-muted-foreground`}
             >
               Delete
-            </button>
+            </Button>
           </div>
         </article>
       ))}
 
+      <Dialog open={Boolean(confirm)} onOpenChange={(open) => { if (!open) setConfirm(null); }}>
       {confirm ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 p-4 backdrop-blur-sm" onClick={() => setConfirm(null)}>
-          <div className="panel w-full max-w-md space-y-4 p-6" onClick={(e) => e.stopPropagation()}>
+          <DialogContent className="admin-modal max-h-[85svh] max-w-md overflow-y-auto rounded-none space-y-4 p-6">
+            <DialogTitle className="sr-only">Application decision</DialogTitle>
             {confirm.resend ? (
               <>
                 <p className="font-display text-lg tracking-[0.18em] uppercase">Decision email already sent</p>
@@ -140,8 +143,8 @@ export function ApplicationsAdmin({ onCount }: { onCount: (n: number) => void })
               </>
             )}
             <div className="flex justify-end gap-2">
-              <button onClick={() => setConfirm(null)} className={btn}>Cancel</button>
-              <button
+              <Button variant="outline" onClick={() => setConfirm(null)} className={btn}>Cancel</Button>
+              <Button variant="outline"
                 onClick={() => {
                   const c = confirm;
                   setConfirm(null);
@@ -150,11 +153,11 @@ export function ApplicationsAdmin({ onCount }: { onCount: (n: number) => void })
                 className={`${btn} ${confirm.status === "ACCEPTED" ? "hover:border-rust" : "text-destructive hover:border-destructive"}`}
               >
                 {confirm.resend ? "Resend email" : "Confirm & send"}
-              </button>
+              </Button>
             </div>
-          </div>
-        </div>
+          </DialogContent>
       ) : null}
+      </Dialog>
     </div>
   );
 }
