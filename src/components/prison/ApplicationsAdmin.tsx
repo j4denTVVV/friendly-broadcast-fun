@@ -1,5 +1,7 @@
 import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
   listApplications,
   setApplicationStatus,
@@ -58,7 +60,7 @@ export function ApplicationsAdmin({ onCount }: { onCount: (n: number) => void })
       {msg ? <p className={`label-mono ${msg.bad ? "text-destructive" : "text-rust"}`}>{msg.text}</p> : null}
       {apps.length === 0 ? <p className="label-mono">No entry requests yet.</p> : null}
       {apps.map((a) => (
-        <article key={a.id} className="panel space-y-2 p-5">
+        <article key={a.id} className="admin-table-row panel space-y-4 p-5 sm:p-6">
           <div className="flex flex-wrap items-center gap-3">
             <span className="font-display text-base tracking-[0.18em] uppercase">{a.name}</span>
             <span className="label-mono">@{a.handle}</span>
@@ -118,9 +120,10 @@ export function ApplicationsAdmin({ onCount }: { onCount: (n: number) => void })
         </article>
       ))}
 
+      <Dialog open={Boolean(confirm)} onOpenChange={(open) => { if (!open) setConfirm(null); }}>
       {confirm ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 p-4 backdrop-blur-sm" onClick={() => setConfirm(null)}>
-          <div className="panel w-full max-w-md space-y-4 p-6" onClick={(e) => e.stopPropagation()}>
+          <DialogContent className="admin-modal max-h-[85svh] max-w-md overflow-y-auto rounded-none space-y-4 p-6">
+            <DialogTitle className="sr-only">Application decision</DialogTitle>
             {confirm.resend ? (
               <>
                 <p className="font-display text-lg tracking-[0.18em] uppercase">Decision email already sent</p>
@@ -152,9 +155,9 @@ export function ApplicationsAdmin({ onCount }: { onCount: (n: number) => void })
                 {confirm.resend ? "Resend email" : "Confirm & send"}
               </button>
             </div>
-          </div>
-        </div>
+          </DialogContent>
       ) : null}
+      </Dialog>
     </div>
   );
 }

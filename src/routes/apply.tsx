@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageShell } from "@/components/prison/PageShell";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, CheckCircle2, LoaderCircle } from "lucide-react";
 
 export const Route = createFileRoute("/apply")({
   head: () => ({
@@ -18,7 +20,7 @@ export const Route = createFileRoute("/apply")({
 });
 
 const input =
-  "hairline mt-1 w-full bg-background/70 px-3 py-2 font-mono text-sm outline-none focus:border-rust";
+  "field-input mt-2";
 
 function ApplyPage() {
   const [f, setF] = useState({ name: "", handle: "", platform: "", links: "", pitch: "", contact: "" });
@@ -43,24 +45,30 @@ function ApplyPage() {
   if (state === "done") {
     return (
       <PageShell kicker="Intake" title="File received">
-        <p className="label-mono text-rust">Your request is under review. Watch your inbox.</p>
+        <div role="status" className="scan-result border-y border-border py-10">
+          <CheckCircle2 className="mb-6 size-10 text-success" />
+          <p className="label-mono text-success">Your request is under review. Watch your inbox.</p>
+        </div>
       </PageShell>
     );
   }
 
+  const completed = [f.name, f.handle, f.contact, f.pitch].filter((value) => value.trim()).length;
+  const field = (key: keyof typeof f, label: string, required = false, type = "text") => (
+    <div><label htmlFor={`application-${key}`} className="label-mono block">{label}</label><input id={`application-${key}`} required={required} type={type} value={f[key]} onChange={set(key)} className={input} autoComplete={key === "name" ? "name" : key === "contact" ? "email" : "off"} /></div>
+  );
+
   return (
     <PageShell kicker="Intake" title="Apply for entry">
-      <form onSubmit={submit} className="panel max-w-xl space-y-4 p-6">
-        <div><label className="label-mono block">Name</label><input required value={f.name} onChange={set("name")} className={input} /></div>
-        <div><label className="label-mono block">Handle</label><input required value={f.handle} onChange={set("handle")} className={input} /></div>
-        <div><label className="label-mono block">Email</label><input required type="email" value={f.contact} onChange={set("contact")} className={input} /></div>
-        <div><label className="label-mono block">Main platform</label><input value={f.platform} onChange={set("platform")} className={input} /></div>
-        <div><label className="label-mono block">Links</label><input value={f.links} onChange={set("links")} className={input} /></div>
-        <div><label className="label-mono block">Why should you be inside?</label><textarea required rows={5} value={f.pitch} onChange={set("pitch")} className={input} /></div>
-        {state === "error" ? <p className="font-mono text-xs text-destructive uppercase">Something went wrong. Try again.</p> : null}
-        <button disabled={state === "busy"} className="hairline w-full bg-card/60 px-4 py-3 font-mono text-[11px] tracking-[0.3em] uppercase hover:border-rust disabled:opacity-50">
-          {state === "busy" ? "Sending…" : "Submit file"}
-        </button>
+      <form onSubmit={submit} aria-busy={state === "busy"} className="max-w-3xl space-y-8">
+        <div className="flex items-center justify-between border-b border-border pb-4"><span className="label-mono text-rust">Admission file</span><span className="label-mono">{completed} / 4 required fields</span></div>
+        <div className="form-section"><div className="form-section-title"><span className="form-section-number">01</span><h2 className="text-2xl">Identification</h2></div><div className="grid gap-6 sm:grid-cols-2">{field("name", "Name", true)}{field("handle", "Handle", true)}<div className="sm:col-span-2">{field("contact", "Email", true, "email")}</div></div></div>
+        <div className="form-section"><div className="form-section-title"><span className="form-section-number">02</span><h2 className="text-2xl">Channels</h2></div><div className="grid gap-6 sm:grid-cols-2">{field("platform", "Main platform")}{field("links", "Links")}</div></div>
+        <div className="form-section"><div className="form-section-title"><span className="form-section-number">03</span><h2 className="text-2xl">Statement</h2></div><label htmlFor="application-pitch" className="label-mono block">Why should you be inside?</label><textarea id="application-pitch" required rows={6} value={f.pitch} onChange={set("pitch")} className={input} /></div>
+        {state === "error" ? <p role="alert" className="border-l-2 border-destructive py-3 pl-4 font-mono text-xs text-destructive uppercase">Something went wrong. Try again.</p> : null}
+        <Button disabled={state === "busy"} className="ps-button ps-button-primary rounded-none">
+          {state === "busy" ? <LoaderCircle className="size-4 animate-spin" /> : <ArrowRight className="size-4" />}<span>{state === "busy" ? "Sending…" : "Submit file"}</span>
+        </Button>
       </form>
     </PageShell>
   );
