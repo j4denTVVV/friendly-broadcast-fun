@@ -10,7 +10,7 @@ export function FileCard({ entry, index = 0 }: { entry: RosterEntry; index?: num
     <Link
       to="/roster/$fileId"
       params={{ fileId: entry.file }}
-      className="panel corner-marks grain group relative block overflow-hidden transition-colors hover:border-rust"
+      className="database-card panel corner-marks grain group relative block overflow-hidden transition-colors hover:border-rust"
       style={{ animationDelay: `${index * 60}ms` }}
     >
       <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100">
@@ -28,7 +28,7 @@ export function FileCard({ entry, index = 0 }: { entry: RosterEntry; index?: num
         )}
       </div>
 
-      <div className="relative aspect-[3/4] overflow-hidden bg-background">
+      <div className="database-portrait relative aspect-[3/4]">
         {revealed && entry.image ? (
           <img
             src={entry.image}
@@ -38,9 +38,7 @@ export function FileCard({ entry, index = 0 }: { entry: RosterEntry; index?: num
           />
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center gap-3">
-            <div className="animate-flicker font-display text-5xl text-muted-foreground/25">
-              ?
-            </div>
+            <div className="sealed-grid" /><div className="sealed-figure" aria-hidden="true" />
             <span className="label-mono">Identity unknown</span>
             {entry.hint ? (
               <span className="file-hint mt-1 border border-rust/40 bg-rust/10 px-2 py-1 font-mono text-[10px] tracking-[0.2em] text-rust">
@@ -49,25 +47,25 @@ export function FileCard({ entry, index = 0 }: { entry: RosterEntry; index?: num
             ) : null}
           </div>
         )}
-        <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(0,0,0,0.35)_0px,rgba(0,0,0,0.35)_1px,transparent_1px,transparent_4px)] opacity-60" />
+        <div className="pointer-events-none absolute inset-0 media-scanlines opacity-60" />
       </div>
 
       <div className="space-y-2 px-4 py-4">
-        <div className="flex items-baseline justify-between gap-2">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
           <span className="label-mono">Identity</span>
-          <span className="font-mono text-xs tracking-[0.16em]">
+          <span className="min-w-0 break-words font-mono text-xs tracking-[0.16em]">
             {revealed ? (entry.name ?? "[REVEALED]") : "[CLASSIFIED]"}
           </span>
         </div>
-        <div className="flex items-baseline justify-between gap-2">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
           <span className="label-mono">Status</span>
           <span className="font-mono text-xs tracking-[0.16em] text-rust">
             {revealed ? (entry.status ?? "CONFIRMED") : "CLASSIFIED"}
           </span>
         </div>
-        <div className="flex items-baseline justify-between gap-2">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
           <span className="label-mono">Access</span>
-          <span className="font-mono text-xs tracking-[0.16em]">
+          <span className="min-w-0 break-words font-mono text-xs tracking-[0.16em]">
             {revealed ? "AUTHORIZED" : "DENIED"}
           </span>
         </div>
