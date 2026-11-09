@@ -68,8 +68,7 @@ export function playSfx(name: Sfx) {
       break;
     }
     case "click":
-      noise(c, 0.065, 0.12, 1200, 0, 2);
-      tone(c, 320, 0.075, "triangle", 0.035, 0, 140);
+      tone(c, 180, 0.06, "sine", 0.018, 0, 120);
       break;
     case "clank":
       noise(c, 0.5, 0.5, 600, 0, 2);
