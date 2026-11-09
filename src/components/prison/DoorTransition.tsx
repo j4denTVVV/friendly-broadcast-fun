@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { playSfx } from "@/lib/sfx";
 import { createPortal } from "react-dom";
 import rust from "@/assets/texture-rust.jpg";
 import { isAdminView } from "@/lib/roster";
