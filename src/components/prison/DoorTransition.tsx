@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { playSfx } from "@/lib/sfx";
 import { createPortal } from "react-dom";
 import rust from "@/assets/texture-rust.jpg";
 import { isAdminView } from "@/lib/roster";
@@ -57,7 +56,7 @@ export function DoorTransition({
 
     setPhase("closing");
     setStep(0);
-    playSfx("clank");
+    // door sound removed
     timers.push(setTimeout(() => setPhase("scanning"), 680));
     lines.forEach((_, index) => timers.push(setTimeout(() => setStep(index + 1), 740 + index * gap)));
     timers.push(setTimeout(() => {
@@ -66,7 +65,7 @@ export function DoorTransition({
     }, coveredAt));
     timers.push(setTimeout(() => {
       setPhase("opening");
-      playSfx(hard ? "reveal" : "clank");
+      // door sound removed
     }, openingAt));
     timers.push(setTimeout(() => setPhase("idle"), openingAt + 1500));
 
