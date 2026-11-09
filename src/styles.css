@@ -581,3 +581,5 @@ a:hover .brand-mark { transform: rotate(-3deg) scale(1.04); opacity: 1; }
   .ps-intro, .ps-intro *, .ps-intro-exit { animation-duration:.01ms !important; animation-delay:0s !important; }
   .ps-intro-exit { opacity:0; }
 }
+
+.admin-entry h1, .admin-entry h2, .admin-entry h3 { font-family: var(--font-display); text-transform: uppercase; letter-spacing: .02em; }
