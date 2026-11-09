@@ -105,14 +105,8 @@ export function installUiSfx() {
     if (t && t !== lastEl) playSfx("hover");
     lastEl = t;
   };
-  const press = (e: Event) => {
-    const target = isTarget(e.target);
-    if (target && !target.matches(":disabled,[aria-disabled=true]")) playSfx("click");
-  };
   document.addEventListener("pointerover", over);
-  document.addEventListener("click", press);
   return () => {
     document.removeEventListener("pointerover", over);
-    document.removeEventListener("click", press);
   };
 }
